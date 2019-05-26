@@ -1,4 +1,4 @@
-function [res_vol,jac_vol] = compute_res_jac_vol(sol, coord, nd_vol, ep)
+function [res_vol,jac_vol] = compute_res_jac_vol(sol, coord, nd_vol, pp)
 % This function computes the volumetric conribution to the residual and jacobain.
 
 % initialize arrays
@@ -6,13 +6,10 @@ numdofs = size(sol,1); % total number of dofs
 res_vol = zeros(numdofs,1);       % initialize residual controbution
 jac_vol = zeros(numdofs,numdofs); % initialize jacobian controbution
 
-% determine case
-prblm   = ep(1); % problem type
-
-switch prblm
-    case 1 % steady heat conduction using an MMS: q^dot = k*pi^2*(cos(2*\pi*x) + cos(2*\pi*y))
+switch pp('prblm')
+    case "steady heat MMS" % steady heat conduction using an MMS: q^dot = k*pi^2*(cos(2*\pi*x) + cos(2*\pi*y))
         
-        cond = ep(3); % conductivity
+        cond = pp('conductivity'); % conductivity
         
         x = coord(1);
         y = coord(2);

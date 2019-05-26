@@ -1,4 +1,4 @@
-function [res,jac] = res_jac_diff_srf(sol, edge_coord, edge_area, ep)
+function [res,jac] = res_jac_diff_srf(sol, edge_coord, edge_area, pp)
 % compute surface residual and jacobian contribution for steady heat
 % diffusion
 
@@ -8,7 +8,7 @@ res  = zeros(dofs,1);
 jac  = zeros(dofs,dofs);
 
 % conductivity
-cond = ep(3);
+cond = pp('conductivity');
 
 % q = -kdt/dx
 q      = -cond*(sol(2) - sol(1))/abs(edge_coord(2) - edge_coord(1));

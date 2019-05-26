@@ -1,5 +1,6 @@
 function mesh_obj = meshgen(box, h)
-% structured mesh generator for vertex-centered finite volume
+% structured mesh generator for vertex-centered finite volume. Ordering
+% follows a counter-clockwise pattern beginnin from bottom-left most point
 %
 % Input:  box  - coordinates of mesh extrema
 %         h    - element size of mesh
@@ -33,9 +34,10 @@ nd_vol = ones(nnodes_x*nnodes_y,1)*0.0625; % volume of scv
                                            % multiplication factor of
                                            % 0.0625 is more of a coeff
                                            % that is doubled when an edge
-                                           % shares the same node
+                                           % shares the same node in a
+                                           % Quad4 element
 
-%% loop along y-axis and construct edges
+%% loop along y-axis and construct edges left to right
 for iy = 1:nnodes_y
     
     % fill coordinate list
@@ -47,7 +49,7 @@ for iy = 1:nnodes_y
     edge_topo_x(edge_ids_x,:) = [node_ids_x(1:end-1) node_ids_x(2:end)];
 end
 
-%% loop along x-axis and construct edges
+%% loop along x-axis and construct edges bottom to top
 for ix = 1:nnodes_x
 
     % create edge topology for y-direction
@@ -57,7 +59,7 @@ for ix = 1:nnodes_x
 end
 
 %% compute the surface and volume areas 
-tol = 1e-14;
+tol = 1e-14; % tolerance for comparison of coordinates
 
 % loop over all edges along x-axis left to right
 for i = 1:size(edge_topo_x,1)
