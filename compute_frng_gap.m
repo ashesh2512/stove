@@ -39,7 +39,7 @@ if ~isempty(coords2((nb_ib2==-1)))
                            & coords2(:,2)<=max(coords1(bg_ib2==-1,2));
     frng_gap_left2 = abs(max(coords2(inner_frng_left_plane2,1)) - min(coords1(bg_ib2==-1,1)));
     
-    fprintf('\n near body mesh 2 fringe gap: bottom: %e, right: %e, top: %e, left:%e', ...
+    fprintf('near body mesh 2 fringe gap: bottom: %e, right: %e, top: %e, left:%e \n', ...
             frng_gap_bot2, frng_gap_right2, frng_gap_top2, frng_gap_left2);
     fprintf('\n');
 end

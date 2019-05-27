@@ -4,12 +4,12 @@ function [donor_map,bg_don_nds] = map_donors(nb_mesh, bg_mesh, nb_ib, bg_ib, ov_
 % 1 and fringe points marked as -1
 
 % determine donor grid
-switch ov_info('donor_grid')
+switch ov_info('donor grid')
     case "tensor"
-        [donor_map, bg_don_nds] = get_nbrs_tensor(nb_mesh{2,1}, bg_mesh{2,1}, nb_ib, ov_info('intrp_order'));
+        [donor_map, bg_don_nds] = get_nbrs_tensor(nb_mesh{2,1}, bg_mesh{2,1}, nb_ib, ov_info('intrp order'));
     
     case "radial"
-        [donor_map, bg_don_nds] = get_nbrs_radial(nb_mesh{2,1}, bg_mesh{2,1}, nb_ib, ov_info('intrp_radius'));
+        [donor_map, bg_don_nds] = get_nbrs_radial(nb_mesh{2,1}, bg_mesh{2,1}, nb_ib, ov_info('intrp radius'));
 
     otherwise
         error('Do not recognize donor grid type; check overset info in driver');

@@ -1,2 +1,5 @@
 # ignore all hidden files
 .*
+
+# ignore open matlab files
+*.m~

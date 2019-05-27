@@ -25,7 +25,7 @@ switch pp('prblm')
         error('Do not recognize the problem id');
 end
 
-fprintf('\n L2 error = %e', L2_err);
+fprintf('\nL2 error = %e', L2_err);
 fprintf('\n');
 
 end

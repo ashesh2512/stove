@@ -2,9 +2,9 @@ function coeff = compute_frg_coeff(frng_coords,donor_nd_coords,ov_info)
 % assemble interpolation coefficients corresponding to fringe nodes
 
 % determine contribution based on donor grid type
-switch ov_info('donor_grid')
+switch ov_info('donor grid')
     case "tensor"
-        coeff = coeff_tensor(frng_coords,donor_nd_coords,ov_info('intrp_order'));
+        coeff = coeff_tensor(frng_coords,donor_nd_coords,ov_info('intrp order'));
     
     case "radial"
         coeff = coeff_radial(frng_coords,donor_nd_coords,ov_info);
