@@ -40,9 +40,11 @@ bc2 = containers.Map({ 'bottom',   'right',     'top',    'left'}, ...
 %                    each grid this value can vary from boundary to 
 %                    boundary
 ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order'}, ...
-                         {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 2 });
-% ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp radius', 'intrp type', 'shape param', 'poly order'}, ...
-%                          {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", 2.5*max(h2), "gaussian", 1.0, 3 });
+                         {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 1 });
+% ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
+%                            'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
+%                          { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
+%                            2.5*max(h2), "rbf", "gaussian", 1.0, 1 });
 
 % convergence parameters
 N_iters    =    10; % Maximum number of Newton steps
@@ -75,16 +77,16 @@ end
 iblank1 = nb_iblank1; iblank1(bg_iblank2==-1) = -1;
 iblank2 = bg_iblank1; iblank2(nb_iblank2==-1) = -1;
 
-if (print_frng_dist)
-    compute_frng_gap(mesh_obj1,mesh_obj2,nb_iblank1,bg_iblank1,nb_iblank2,bg_iblank2);
-end
-
 % determine nodal donor maps for each mesh
 [donor_map1, don_nds2] = map_donors(mesh_obj1, mesh_obj2, iblank1, iblank2, ov_info);
 [donor_map2, don_nds1] = map_donors(mesh_obj2, mesh_obj1, iblank2, iblank1, ov_info);
 
 if (plot_hole_cut_flag)
     plot_hole_cut(mesh_obj1, mesh_obj2, iblank1, iblank2, don_nds1, don_nds2);
+end
+
+if (print_frng_dist)
+    compute_frng_gap(mesh_obj1,mesh_obj2,nb_iblank1,bg_iblank1,nb_iblank2,bg_iblank2);
 end
 
 %% initialize solution and set boundary conditions

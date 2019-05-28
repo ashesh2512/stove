@@ -19,7 +19,7 @@ end
 
 function coeff = coeff_tensor(frng_coords,donor_nd_coords,p)
 
-coeff = zeros(size(donor_nd_coords,1),1);
+coeff = zeros(size(donor_nd_coords,1),1); % allocate memory for coefficients
 
 xcoords = unique(donor_nd_coords(:,1)); % determine 1D unique x coordinates
 ycoords = unique(donor_nd_coords(:,2)); % determine 1D unique y coordinates
@@ -43,6 +43,13 @@ end
 
 function coeff = coeff_radial(frng_coords,donor_nd_coords,ov_info)
 
-coeff = zeros(size(donor_nd_coords,1),1);
+% determine interpolation type
+switch ov_info('intrp type')
+    case "rbf"
+        coeff = coeff_rbf(frng_coords,donor_nd_coords,ov_info);
+
+    otherwise
+        error('Do not recognize dinterpolation type; check overset info in driver');
+end
 
 end
