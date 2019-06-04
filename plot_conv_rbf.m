@@ -48,8 +48,8 @@ plot(h, L2_p3,'--*b','LineWidth', 2);
 plot(h,y_vals1,'-m','LineWidth', 2);
 plot(h,y_vals2,'-k','LineWidth', 2);
 set(gca, 'XScale', 'log', 'YScale', 'log');
-xlabel('h','FontSize',18); ylabel('L_2','FontSize',18);
-legend('RBF', 'RBF+p=1', 'RBF+p=2', 'RBF+p=3', 'slope=1', 'slope=2');
+xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
+legend('RBF', 'RBF+p=1', 'RBF+p=2', 'RBF+p=3', 'slope=1', 'slope=2','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);
 
@@ -91,7 +91,27 @@ plot(h, L2_p1,'--*g','LineWidth', 2);
 plot(h,y_vals1,'-m','LineWidth', 2);
 plot(h,y_vals2,'-k','LineWidth', 2);
 set(gca, 'XScale', 'log', 'YScale', 'log');
-xlabel('h','FontSize',18); ylabel('L_2','FontSize',18);
-legend('RBF','RBF+p=1','slope=1', 'slope=2');
+xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
+legend('RBF','RBF+p=1','slope=1', 'slope=2','Interpreter','latex');
+set(gcf,'color','w');
+set(gca, 'FontSize', 18);
+
+%% problem parameters
+% near body mesh 2 fringe gap: bottom: 7.362500e-01, right: 6.637500e-01, top: 6.637500e-01, left:7.362500e-01 
+%
+% ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
+%                            'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
+%                          { 2, 2, 1, 9, [29*h2(1), 26*h2(1), 26*h2(1), 29*h2(1)], "radial", ...
+%                            2.5*max(h2), "rbf", "gaussian", 1.0, 1 });
+                       
+nnodes = [18,37,64,92,130,176,222,280,340,416,488,565,652,746,854,956,1070,1188,1313,1450,1580,1734,1886,2040,2200];
+time   = [0.012,0.014,0.015,0.016,0.019,0.023,0.026,0.033,0.041,0.049,0.06,0.07,0.085,0.1,0.13,0.16,0.2,0.24,0.27,0.33,0.38,0.47,0.54,0.64,0.76];
+
+figure(3)
+clf
+hold on
+plot(nnodes, time/time(1),'--+b','LineWidth', 2);
+xlabel('number of nodes','Interpreter','latex'); ylabel('time relative to 1st point','Interpreter','latex');
+title('RBF+p=2','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);
