@@ -47,14 +47,14 @@ set(gca, 'FontSize', 18);
 %% problem properties               
 % % background mesh
 % box1 = [-2,2; -2,2];
-% h1   = [ 0.2,  0.2]/2/2/2;
+% h1   = [ 0.2,  0.2];
 %
 % near body mesh
 % box2 = [-1.13625,0.86375; -1.13625,0.86375];
 % h2   = [             0.2,              0.2];
 %
-% ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor_grid', 'intrp_type', 'intrp_order'}, ...
-%                          {  2, 2, 1, 2, [4*0.1, 4*0.1, 4*0.1, 4*0.1], "tensor", "lagrange", 1 });
+% ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order'}, ...
+%                          {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 1 });
 
 del    = 0.2;
 h      = [del del/2 del/4 del/8];
