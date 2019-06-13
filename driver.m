@@ -1,12 +1,13 @@
 % 2D overset solver using structured vertex-centered FVM.
 % 
 % Assumptions - overset configuration with exactly 2 grids
+%             - grids are stationary in time
 %             - quad4 elements with constant spacing in each direction
 %             - square/rectangular problem domain alignes with x and y axis
-%             - same physics with same mterial properties solved on both grids
+%             - same physics with same material properties solved on both grids
 %             - non-dirichlet boundary conditions cannot be applied
 %             - each boundary is associated with a BC
-%             - only coupled overet solver supported currently
+%             - only coupled overset solver supported currently
 
 %% clear everything
 clc; close all; clear all;
