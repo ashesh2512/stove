@@ -1,3 +1,4 @@
+function L2_err = driver(inp_container)
 % 2D overset solver using structured vertex-centered FVM.
 % 
 % Assumptions - overset configuration with exactly 2 grids
@@ -9,53 +10,37 @@
 %             - each boundary is associated with a BC
 %             - only coupled overset solver supported currently
 
-%% clear everything
-clc; close all; clear all;
-format long;
+%% extract input options
 
-%% user input options
-
-% problem properties
-pp = containers.Map({            'prblm', 'dof per node', 'conductivity'}, ...
-                     { "steady heat MMS",              1,              1});
+% extract problem properties
+pp = inp_container('problem definition');
                  
-% background mesh
-box1 = [-2,2; -2,2];
-h1   = [ 0.2,  0.2]/2;
+% extract mesh 1 details
+mesh1 = inp_container('mesh 1');
+box1  = mesh1('dim');
+h1    = mesh1('size');
+bc1   = mesh1('bc');
 
-% boundary condition map - bottom, right, top, left
-bc1 = containers.Map({   'bottom',     'right',       'top',      'left'}, ...
-                     {"dirichlet", "dirichlet", "dirichlet", "dirichlet"});
-% near body mesh
-box2 = [-1.13625,0.86375; -1.13625,0.86375];
-h2   = [             0.2,              0.2]/2;
+% extract mesh 2 details
+mesh2 = inp_container('mesh 2');
+box2  = mesh2('dim');
+h2    = mesh2('size');
+bc2   = mesh2('bc');
+                   
+% extract overset properties
+ov_info = inp_container('overset prop');
 
-% boundary condition map - bottom, right, top, left
-bc2 = containers.Map({ 'bottom',   'right',     'top',    'left'}, ...
-                     {"overset", "overset", "overset", "overset"});
+% extract solver properties
+solver_info = inp_container('solver prop');
+N_iters     = solver_info('Newton steps');
+resnrmdrop  = solver_info('residual tolerance');
 
-% implicit hole cutting options -- apply to both grids
-% mandatory firnge - number of points inward from the overset boundary to
-%                    be marked as fringe
-% overlap          - minimum distance between innermost fringe points on 
-%                    each grid this value can vary from boundary to 
-%                    boundary
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order'}, ...
-                         {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 1 });
-% ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
-%                            'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
-%                          { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
-%                            2.5*max(h2), "rbf", "gaussian", 1.0, 1 });
-
-% convergence parameters
-N_iters    =    10; % Maximum number of Newton steps
-resnrmdrop = 1e-09; % Newton convergence criteria
-
-% debug/display flags
-plot_mesh_flag     = false;
-plot_hole_cut_flag = true;
-print_frng_dist    = true;
-plot_sol_flag      = true;
+% extract debug/display flags
+debug_flags        = inp_container('debug flags');
+plot_mesh_flag     = debug_flags('plot mesh');
+plot_hole_cut_flag = debug_flags('plot hole cut');
+print_frng_dist    = debug_flags('print fringe gap');
+plot_sol_flag      = debug_flags('plot sol');
 
 %% build meshes
 
@@ -148,4 +133,7 @@ end
 
 %% compute L2 error
 
-comp_L2_err(pp,glb_sol,mesh_obj1,mesh_obj2);
+L2_err = comp_L2_err(pp,glb_sol,mesh_obj1,mesh_obj2);
+
+end
+
