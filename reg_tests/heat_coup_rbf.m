@@ -55,12 +55,13 @@ ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory
                          { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
                            2.5*max(h2), "rbf", "gaussian", 1.0, -1 });
 
-%% convergence parameters
-N_iters    =    10; % Maximum number of Newton steps
-resnrmdrop = 1e-09; % Newton convergence criteria
+%% time step and linear solve parameters
 
-solver_prop = containers.Map({'Newton steps', 'residual tolerance'}, ...
-                             {       N_iters,           resnrmdrop} );
+time_sol_info = containers.Map({'init time', 'total time', 'time step', 'BDF order'}, ...
+                             {          0.0,          2.0,         100,           2} );
+
+lin_sol_info = containers.Map({'Newton steps', 'residual tolerance'}, ...
+                              {            10,                1e-09} );
 
 %% debug/display flags
 debug_flags = containers.Map({'plot mesh', 'plot hole cut', 'print fringe gap', 'plot sol'}, ...
@@ -74,8 +75,8 @@ fprintf(['Starting test for heat equation on coupled meshes', ...
 fprintf('\n');
 fprintf('\n');
 
-inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'solver prop', 'debug flags'}, ...
-                                {pp, mesh1, mesh2, ov_info, solver_prop, debug_flags} );
+inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
+                                {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
 
 L2_err = driver(inp_container);
 gold   = 1.0310277606694130e-02;
@@ -105,8 +106,8 @@ ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory
                          { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
                            2.5*max(h2), "rbf", "gaussian", 1.0, 1 });
 
-inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'solver prop', 'debug flags'}, ...
-                                {pp, mesh1, mesh2, ov_info, solver_prop, debug_flags} );
+inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
+                                {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
 
 L2_err = driver(inp_container);
 gold   = 1.0003922449951427e-02;
@@ -145,8 +146,8 @@ ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory
                          { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
                            2.5*max(h2), "rbf", "gaussian", 1.0, 2 });
 
-inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'solver prop', 'debug flags'}, ...
-                                {pp, mesh1, mesh2, ov_info, solver_prop, debug_flags} );
+inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
+                                {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
 
 L2_err = driver(inp_container);
 gold   = 2.9356976388671850e-03;
@@ -185,8 +186,8 @@ ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory
                          { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
                            2.5*max(h2), "rbf", "gaussian", 1.0, 3 });
 
-inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'solver prop', 'debug flags'}, ...
-                                {pp, mesh1, mesh2, ov_info, solver_prop, debug_flags} );
+inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
+                                {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
 
 L2_err = driver(inp_container);
 gold   = 1.0904835022487232e-02;
@@ -225,8 +226,8 @@ ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory
                          { 2, 2, 1, 5, [14*h2(1), 13*h2(1), 13*h2(1), 14*h2(1)], "radial", ...
                            2.5*max(h2), "rbf", "gaussian", 1.0, -1 });
                        
-inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'solver prop', 'debug flags'}, ...
-                                {pp, mesh1, mesh2, ov_info, solver_prop, debug_flags} );
+inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
+                                {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
 
 L2_err = driver(inp_container);
 gold   = 2.9597964515804135e-03;
@@ -256,8 +257,8 @@ ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory
                          { 2, 2, 1, 5, [14*h2(1), 13*h2(1), 13*h2(1), 14*h2(1)], "radial", ...
                            2.5*max(h2), "rbf", "gaussian", 1.0, 1 });
                        
-inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'solver prop', 'debug flags'}, ...
-                                {pp, mesh1, mesh2, ov_info, solver_prop, debug_flags} );
+inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
+                                {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
 
 L2_err = driver(inp_container);
 gold   = 2.9836221503685913e-03;

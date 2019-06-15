@@ -1,4 +1,6 @@
-function [glb_res,glb_jac] = Build_res_jac_coupled(glb_mesh,glb_donor_map,glb_iblank,glb_sol,glb_nd_dof_map,ov_info,pp)
+function [glb_res,glb_jac] = Build_res_jac_coupled(glb_mesh,glb_donor_map,glb_iblank, ....
+                                                   glb_sol_np1,glb_sol_n,glb_sol_nm1,glb_nd_dof_map, ...
+                                                   ov_info,time_info,pp)
 % assemble coupled residual and jacobian correpesonding to both grids
 
 %% pre-processing
@@ -8,7 +10,7 @@ ndof_nd      = pp('dof per node'); % number of dofs per node
 jac_srf_size = (2*ndof_nd)^2; % size of jacobain contribution from each scs
 
 num_dofs = zeros(num_grids,1);
-tot_dofs = size(glb_sol,1); % total dof counter
+tot_dofs = size(glb_sol_np1,1); % total dof counter
 vec_size = 0; % vector size counter
 count    = 0; % counter to keep track of IVEC, JVEC, VVEC, indexing
 
@@ -84,7 +86,7 @@ for ig = 1:num_grids
 
         % compute residual and jacobian contribution from surface
         % contributions
-        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol(edge_dofs), edge_coord, edge_area_x(ex), pp );
+        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol_np1(edge_dofs), edge_coord, edge_area_x(ex), pp );
         
         % sum into global reidual and jacobian for field dofs
         glb_res(field_dofs) = glb_res(field_dofs) + res_srf(ismember(edge_dofs,field_dofs));
@@ -121,7 +123,7 @@ for ig = 1:num_grids
         
         % compute residual and jacobian contribution from surface
         % contributions
-        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol(edge_dofs), edge_coord, edge_area_y(ey), pp );
+        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol_np1(edge_dofs), edge_coord, edge_area_y(ey), pp );
         
         % sum into global reidual and jacobian for field dofs
         glb_res(field_dofs) = glb_res(field_dofs) + res_srf(ismember(edge_dofs,field_dofs));
@@ -158,7 +160,7 @@ for ig = 1:num_grids
    
         % compute residual and jacobian contribution from volumetric
         % contributions
-        [res_vol, jac_vol] = compute_res_jac_vol( glb_sol(nd_dofs), coord, nd_vol(nd), pp );
+        [res_vol, jac_vol] = compute_res_jac_vol( glb_sol_np1(nd_dofs), coord, nd_vol(nd), pp );
         
         % sum into global reidual and jacobian
         glb_res(nd_dofs) = glb_res(nd_dofs) + res_vol;
@@ -195,7 +197,7 @@ for ig = 1:num_grids
         for r = 1:length(frng_nd_dofs)
             % sum into residual = frng_sol - N*don_sol
             glb_res(frng_nd_dofs(r)) = glb_res(frng_nd_dofs(r)) ... 
-                                     + glb_sol(frng_nd_dofs(r)) - coeff'*glb_sol(donor_nd_dofs);
+                                     + glb_sol_np1(frng_nd_dofs(r)) - coeff'*glb_sol_np1(donor_nd_dofs);
 
             % jacobian contribution from d(frng_sol)/d(frng_sol)
             count = count + 1;

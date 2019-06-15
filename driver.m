@@ -30,10 +30,17 @@ bc2   = mesh2('bc');
 % extract overset properties
 ov_info = inp_container('overset prop');
 
-% extract solver properties
-solver_info = inp_container('solver prop');
-N_iters     = solver_info('Newton steps');
-resnrmdrop  = solver_info('residual tolerance');
+% extract time solver properties
+time_info = inp_container('time solver prop');
+BDF_order = time_info('BDF order');
+init_time = time_info('init time');
+tot_time  = time_info('total time');
+dt        = time_info('time step');
+
+% extract linear solver properties
+lin_sol_info = inp_container('lin solver prop');
+N_iters      = lin_sol_info('Newton steps');
+resnrmdrop   = lin_sol_info('residual tolerance');
 
 % extract debug/display flags
 debug_flags        = inp_container('debug flags');
@@ -93,47 +100,81 @@ for ind = 1:size(coords2,1)
     nd_dof_map2(ind,:) = max(nd_dof_map1(:)) + (((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd));
 end
 
-% apply boundary conditions to mesh 1
-[sol1,fdof1] = apply_bc(pp,mesh_obj1,bc1,nd_dof_map1);
+% extract the free and constrained parts of the system for mesh 1
+[fdof1,cnd1] = get_dof_status(mesh_obj1,bc1,nd_dof_map1);
 
-% apply boundary conditions to mesh 2
-[sol2,fdof2] = apply_bc(pp,mesh_obj2,bc2,nd_dof_map2);
+% extract the free and constrained parts of the system for mesh 2
+[fdof2,cnd2] = get_dof_status(mesh_obj2,bc2,nd_dof_map2);
 
-% asemble global solution and free dof array
-glb_sol  = [ sol1; sol2];
+% asemble global array of free dofs 
 glb_fdof = [fdof1;fdof2]; 
 
-%% perform coupled Newton solve 
+% apply initial conditions to mesh 1
+[sol1_n] = apply_ic(pp,mesh_obj1,nd_dof_map1,init_time);
 
-% loop over newton steps
-for in = 1:N_iters
+% apply initial conditions to mesh 2
+[sol2_n] = apply_ic(pp,mesh_obj2,nd_dof_map1,init_time);
+
+% asemble global solution array at n
+glb_sol_n = [sol1_n; sol2_n];
+
+% initialize global solution array at n-1
+glb_sol_nm1 = zeros(size(glb_sol_n,1),1);
     
-    % evaluate residual and jacobian matrices for all grids
-    [RES, JAC_MAT] = Build_res_jac_coupled({mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, {iblank1,iblank2},...
-                                            glb_sol, {nd_dof_map1,nd_dof_map2}, ov_info, pp);
-            
-    fprintf('residual norm = %e \n', norm(RES(glb_fdof)));
-    if (norm(RES(glb_fdof)) < resnrmdrop)
-        break;
-    elseif in == N_iters
-        error('Maximum Newton iterations reached, and solution still not converged');
+%% Time loop
+
+time_step_count = 0; % time step counter
+curr_time       = init_time; % intialize time of solution
+
+while curr_time <= tot_time
+    
+    time_step_count = time_step_count+1; % update time step count
+    curr_time = curr_time + dt; % update simulation time
+    
+    % apply boundary conditions to mesh 1
+    sol1_np1 = apply_bc(pp,mesh_obj1,cnd1,nd_dof_map1,curr_time);
+    
+    % apply boundary conditions to mesh 2
+    sol2_np1 = apply_bc(pp,mesh_obj2,cnd2,nd_dof_map1,curr_time);
+    
+    % asemble global solution array at n+1
+    glb_sol_np1 = [ sol1_np1; sol2_np1];
+    
+    % perform coupled Newton solve
+    % loop over newton steps
+    for in = 1:N_iters
+        
+        % evaluate residual and jacobian matrices for all grids
+        [RES, JAC_MAT] = Build_res_jac_coupled({mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, {iblank1,iblank2},...
+            glb_sol_np1, glb_sol_n, glb_sol_nm1, {nd_dof_map1,nd_dof_map2}, ov_info, time_info, pp);
+        
+        fprintf('residual norm = %e \n', norm(RES(glb_fdof)));
+        if (norm(RES(glb_fdof)) < resnrmdrop)
+            break;
+        elseif in == N_iters
+            error('Maximum Newton iterations reached, and solution still not converged');
+        end
+        
+        dsol = JAC_MAT(glb_fdof,glb_fdof)\RES(glb_fdof); % perform linear solve
+        
+        % update solution arrays
+        glb_sol_nm1           = glb_sol_n; 
+        glb_sol_n             = glb_sol_np1;
+        glb_sol_np1(glb_fdof) = glb_sol_np1(glb_fdof) - dsol;
+        
     end
-    
-    dsol = JAC_MAT(glb_fdof,glb_fdof)\RES(glb_fdof); % perform linear solve
-    
-    glb_sol(glb_fdof) = glb_sol(glb_fdof) - dsol; % update solution
     
 end
 
 %% plot solution
 
 if (plot_sol_flag)
-    plot_sol(mesh_obj1, mesh_obj2, glb_sol, nd_dof_map1, nd_dof_map2);
+    plot_sol(mesh_obj1, mesh_obj2, glb_sol_np1, nd_dof_map1, nd_dof_map2);
 end
 
 %% compute L2 error
 
-L2_err = comp_L2_err(pp,glb_sol,mesh_obj1,mesh_obj2);
+L2_err = comp_L2_err(pp,glb_sol_np1,mesh_obj1,mesh_obj2);
 
 end
 
