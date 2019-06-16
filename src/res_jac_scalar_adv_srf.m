@@ -1,4 +1,4 @@
-function [res,jac] = res_jac_scalar_adv_srf(sol, edge_coord, edge_area, pp)
+function [res,jac] = res_jac_scalar_adv_srf(sol,edge_coord,edge_area,edge_nrml,pp)
 % compute surface residual and jacobian contribution for scalar advection
 
 % initialize arrays
@@ -7,12 +7,13 @@ res  = zeros(dofs,1);
 jac  = zeros(dofs,dofs);
 
 % extract advection constants
-vel  = pp('velocity');
+vel = pp('velocity');
+vel = dot(vel,edge_nrml);
 
 % interpolate transport variable at edge midpoint
 avg_sol = (sol(1) + sol(2))/2;
  
-% assign resiual contribution => \phi.ndS
+% assign resiual contribution => \phi*v.ndS
 res(1) = res(1) + vel*avg_sol*(+edge_area); % left node
 res(2) = res(2) + vel*avg_sol*(-edge_area); % right node
 

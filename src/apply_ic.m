@@ -25,7 +25,7 @@ switch pp('prblm')
         freq = pp('frequency'); % extract frequency
         vel  = pp('velocity');  % extract constant velocity
         
-        sol = sin(freq*coords(:,1) - vel*init_time) + sin(freq*coords(:,2) - vel*init_time);
+        sol = sin(freq*coords(:,1) - vel(1)*init_time) + sin(freq*coords(:,2) - vel(2)*init_time);
         
     otherwise
         error('Do not recognize the problem; check problem parameters in driver');

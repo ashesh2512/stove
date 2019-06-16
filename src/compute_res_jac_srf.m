@@ -1,4 +1,4 @@
-function [res, jac] = compute_res_jac_srf(sol, edge_coord, edge_area, pp)
+function [res, jac] = compute_res_jac_srf(sol, edge_coord, edge_area, edge_nrml, pp)
 % This function evaluates the scs contribution to the nodal residual and jacobian.
 
 switch pp('prblm')
@@ -8,7 +8,7 @@ switch pp('prblm')
         
     case "unsteady scalar adv" % unsteady scalar advection with constant velocity
         
-        [res,jac] = res_jac_scalar_adv_srf(sol, edge_coord, edge_area, pp);
+        [res,jac] = res_jac_scalar_adv_srf(sol, edge_coord, edge_area, edge_nrml, pp);
 
     otherwise
         error('Do not recognize the problem id');

@@ -29,7 +29,8 @@ switch pp('prblm')
         freq = pp('frequency'); % extract frequency
         vel  = pp('velocity');  % extract constant velocity
         
-        sol(nd_dof_map(cnd)) = sin(freq*coords(cnd,1) - vel*time) + sin(freq*coords(cnd,2) - vel*time);
+        sol(nd_dof_map(cnd)) = sin(freq*coords(cnd,1) - vel(1)*time) ... 
+                             + sin(freq*coords(cnd,2) - vel(2)*time);
         
     otherwise
         error('Do not recognize the problem; check problem parameters in driver');

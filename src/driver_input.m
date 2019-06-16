@@ -2,7 +2,7 @@ clc; clear all; close all;
 
 %% problem properties
 pp = containers.Map({                'prblm', 'dof per node', 'velocity', 'frequency'}, ...
-                     { "unsteady scalar adv",              1,          2,           1});
+                     { "unsteady scalar adv",              1,      [2,2],           1});
                  
 %% background mesh
 box1 = [-2,2; -2,2];
@@ -50,7 +50,7 @@ ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory
                          {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 1 });
 
 %% time step and linear solve parameters
-dt = min(h2)/pp('velocity'); % time step size auming max CFL of 1
+dt = min(h2./pp('velocity')); % time step size auming max CFL of 1
 
 time_sol_info = containers.Map({'init time', 'total time', 'time step', 'BDF order'}, ...
                              {          0.0,          2.0,          dt,           2} );

@@ -26,7 +26,7 @@ switch pp('prblm')
         vel = pp('velocity');
         freq = pp();
 
-        sol_anlyt = sin(freq*coords(:,1) - vel*time) + sin(freq*coords(:,2) - vel*time);
+        sol_anlyt = sin(freq*coords(:,1) - vel(1)*time) + sin(freq*coords(:,2) - vel(2)*time);
         
         L2_err(1) = sqrt( sum((sol - sol_anlyt).^2) / numpts );
         

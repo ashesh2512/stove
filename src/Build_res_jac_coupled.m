@@ -78,6 +78,9 @@ for ig = 1:num_grids
         % extract only x-coordinates for the current edge
         edge_coord = coords(edge_nd,1)';
         
+        % define normal to the edge in +ve x direction
+        edge_nrml = [0; 1];
+        
         % extract dof ids associated with nodes of current edge
         edge_dofs = reshape(nd_dof_map(edge_nd,:)',[],1);
         
@@ -86,7 +89,7 @@ for ig = 1:num_grids
 
         % compute residual and jacobian contribution from surface
         % contributions
-        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol_np1(edge_dofs), edge_coord, edge_area_x(ex), pp );
+        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol_np1(edge_dofs), edge_coord, edge_area_x(ex), edge_nrml, pp );
         
         % sum into global reidual and jacobian for field dofs
         glb_res(field_dofs) = glb_res(field_dofs) + res_srf(ismember(edge_dofs,field_dofs));
@@ -115,6 +118,9 @@ for ig = 1:num_grids
         % extract only y-coordinates for the current edge
         edge_coord = coords(edge_nd,2)';
         
+        % define normal to the edge in +ve x direction
+        edge_nrml = [0; 1];
+        
         % extract dof ids associated with nodes of current edge
         edge_dofs = reshape(nd_dof_map(edge_nd,:)',[],1);
 
@@ -123,7 +129,7 @@ for ig = 1:num_grids
         
         % compute residual and jacobian contribution from surface
         % contributions
-        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol_np1(edge_dofs), edge_coord, edge_area_y(ey), pp );
+        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol_np1(edge_dofs), edge_coord, edge_area_y(ey), edge_nrml, pp );
         
         % sum into global reidual and jacobian for field dofs
         glb_res(field_dofs) = glb_res(field_dofs) + res_srf(ismember(edge_dofs,field_dofs));
