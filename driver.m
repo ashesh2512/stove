@@ -9,6 +9,7 @@ function L2_err = driver(inp_container)
 %             - non-dirichlet boundary conditions cannot be applied
 %             - each boundary is associated with a BC
 %             - only coupled overset solver supported currently
+%             - only BDF 1 and BDF 2 time solvers supported
 
 %% extract input options
 
@@ -130,6 +131,20 @@ while curr_time <= tot_time
     
     time_step_count = time_step_count+1; % update time step count
     curr_time = curr_time + dt; % update simulation time
+    fprintf('Time = %e \n\n', curr_time);
+    
+    % set time stepping parameters
+    if(((time_step_count == 1) && (BDF_order == 2)) || (BDF_order == 1))
+        time_info('gamma_np1') = 1.0;
+        time_info('gamma_n1') = -1.0;
+        time_info('gamma_nm1') = 0.0; 
+    elseif((time_step_count > 1) && (BDF_order == 2))
+        time_info('gamma_np1') = 1.5;
+        time_info('gamma_n1') = -2;
+        time_info('gamma_nm1') = 0.5;
+    else
+        error('Invalid BDF order');
+    end
     
     % apply boundary conditions to mesh 1
     sol1_np1 = apply_bc(pp,mesh_obj1,cnd1,nd_dof_map1,curr_time);
