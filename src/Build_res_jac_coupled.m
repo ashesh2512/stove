@@ -160,7 +160,8 @@ for ig = 1:num_grids
    
         % compute residual and jacobian contribution from volumetric
         % contributions
-        [res_vol, jac_vol] = compute_res_jac_vol( glb_sol_np1(nd_dofs), coord, nd_vol(nd), pp );
+        [res_vol, jac_vol] = compute_res_jac_vol(glb_sol_np1(nd_dofs), glb_sol_n(nd_dofs), glb_sol_nm1(nd_dofs), ...
+                                                 coord, nd_vol(nd), time_info, pp);
         
         % sum into global reidual and jacobian
         glb_res(nd_dofs) = glb_res(nd_dofs) + res_vol;

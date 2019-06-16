@@ -6,6 +6,10 @@ switch pp('prblm')
         
         [res,jac] = res_jac_diff_srf(sol, edge_coord, edge_area, pp);
         
+    case "unsteady scalar adv" % unsteady scalar advection with constant velocity
+        
+        [res,jac] = res_jac_scalar_adv_srf(sol, edge_coord, edge_area, pp);
+
     otherwise
         error('Do not recognize the problem id');
 end 

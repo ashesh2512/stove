@@ -1,4 +1,4 @@
-function L2_err = comp_L2_err(pp,sol,mesh1,mesh2)
+function L2_err = comp_L2_err(pp,sol,mesh1,mesh2,time)
 % This function computes the L2 error and plots the analytical and
 % discretized solutions for qualitative comparison
 
@@ -17,10 +17,19 @@ switch pp('prblm')
         
         cond = pp('conductivity');
         
-        xsol_anlyt = cond/4*(cos(2*pi*coords(:,1)) + cos(2*pi*coords(:,2)));
+        sol_anlyt = cond/4*(cos(2*pi*coords(:,1)) + cos(2*pi*coords(:,2)));
         
-        L2_err(1) = sqrt( sum((sol - xsol_anlyt).^2) / numpts );
+        L2_err(1) = sqrt( sum((sol - sol_anlyt).^2) / numpts );
+        
+    case "unsteady scalar adv" % sin(freq*X - vel*time) + sin(freq*Y - vel*time);
 
+        vel = pp('velocity');
+        freq = pp();
+
+        sol_anlyt = sin(freq*coords(:,1) - vel*time) + sin(freq*coords(:,2) - vel*time);
+        
+        L2_err(1) = sqrt( sum((sol - sol_anlyt).^2) / numpts );
+        
     otherwise
         error('Do not recognize the problem id');
 end

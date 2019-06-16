@@ -1,6 +1,6 @@
 clc; clear all; close all;
 
-addpath(genpath('reg_tests')); % add regression test folder
+addpath(genpath('../src')); % add source folder
 
 tol = 1e-14; %set regression test tolerance
 

@@ -114,7 +114,7 @@ glb_fdof = [fdof1;fdof2];
 [sol1_n] = apply_ic(pp,mesh_obj1,nd_dof_map1,init_time);
 
 % apply initial conditions to mesh 2
-[sol2_n] = apply_ic(pp,mesh_obj2,nd_dof_map1,init_time);
+[sol2_n] = apply_ic(pp,mesh_obj2,nd_dof_map2,init_time);
 
 % asemble global solution array at n
 glb_sol_n = [sol1_n; sol2_n];
@@ -150,7 +150,7 @@ while curr_time <= tot_time
     sol1_np1 = apply_bc(pp,mesh_obj1,cnd1,nd_dof_map1,curr_time);
     
     % apply boundary conditions to mesh 2
-    sol2_np1 = apply_bc(pp,mesh_obj2,cnd2,nd_dof_map1,curr_time);
+    sol2_np1 = apply_bc(pp,mesh_obj2,cnd2,nd_dof_map2,curr_time);
     
     % asemble global solution array at n+1
     glb_sol_np1 = [ sol1_np1; sol2_np1];
@@ -160,8 +160,9 @@ while curr_time <= tot_time
     for in = 1:N_iters
         
         % evaluate residual and jacobian matrices for all grids
-        [RES, JAC_MAT] = Build_res_jac_coupled({mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, {iblank1,iblank2},...
-            glb_sol_np1, glb_sol_n, glb_sol_nm1, {nd_dof_map1,nd_dof_map2}, ov_info, time_info, pp);
+        [RES, JAC_MAT] = Build_res_jac_coupled({mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, {iblank1,iblank2}, ...
+                                                glb_sol_np1, glb_sol_n, glb_sol_nm1, {nd_dof_map1,nd_dof_map2}, ...
+                                                ov_info, time_info, pp);
         
         fprintf('residual norm = %e \n', norm(RES(glb_fdof)));
         if (norm(RES(glb_fdof)) < resnrmdrop)
@@ -189,7 +190,7 @@ end
 
 %% compute L2 error
 
-L2_err = comp_L2_err(pp,glb_sol_np1,mesh_obj1,mesh_obj2);
+L2_err = comp_L2_err(pp,glb_sol_np1,mesh_obj1,mesh_obj2,curr_time);
 
 end
 

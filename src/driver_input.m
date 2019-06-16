@@ -1,23 +1,23 @@
 clc; clear all; close all;
 
 %% problem properties
-pp = containers.Map({            'prblm', 'dof per node', 'conductivity'}, ...
-                     { "steady heat MMS",              1,              1});
+pp = containers.Map({                'prblm', 'dof per node', 'velocity', 'frequency'}, ...
+                     { "unsteady scalar adv",              1,          2,           1});
                  
 %% background mesh
 box1 = [-2,2; -2,2];
-h1   = [ 0.2,  0.2]/2;
+h1   = [ 0.2,  0.2];
 
 % boundary condition map - bottom, right, top, left
-bc1 = containers.Map({   'bottom',     'right',       'top',      'left'}, ...
-                     {"dirichlet", "dirichlet", "dirichlet", "dirichlet"});
+bc1 = containers.Map({    'bottom','right',  'top',      'left'}, ...
+                     { "dirichlet", "none", "none", "dirichlet"});
 
 mesh1 = containers.Map({'dim', 'size', 'bc'}, ...
                        { box1,     h1,  bc1});
                    
 %% near body mesh
-box2 = [-1.13625,0.86375; -1.13625,0.86375];
-h2   = [             0.2,              0.2]/2;
+box2 = [-1 1; -1 1];
+h2   = [ 0.2,  0.2];
 
 % boundary condition map - bottom, right, top, left
 bc2 = containers.Map({ 'bottom',   'right',     'top',    'left'}, ...
@@ -48,27 +48,25 @@ mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
 %                    order consistency.
 ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order'}, ...
                          {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 1 });
-% ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
-%                            'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'intrp order'}, ...
-%                          { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
-%                            2.5*max(h2), "rbf", "gaussian", 1.0, 1 });
 
-%% convergence parameters
-N_iters    =    10; % Maximum number of Newton steps
-resnrmdrop = 1e-09; % Newton convergence criteria
+%% time step and linear solve parameters
+dt = min(h2)/pp('velocity'); % time step size auming max CFL of 1
 
-solver_prop = containers.Map({'Newton steps', 'residual tolerance'}, ...
-                             {       N_iters,           resnrmdrop} );
+time_sol_info = containers.Map({'init time', 'total time', 'time step', 'BDF order'}, ...
+                             {          0.0,          2.0,          dt,           2} );
+
+lin_sol_info = containers.Map({'Newton steps', 'residual tolerance'}, ...
+                              {            10,                1e-09} );
 
 %% debug/display flags
 debug_flags = containers.Map({'plot mesh', 'plot hole cut', 'print fringe gap', 'plot sol'}, ...
-                             {      false,            true,              false,       true} );
+                             {      false,           false,              false,       true} );
 
 %% call driver
 
 %create container map for easy addition and removal of variables without
 %having to change other input files
-inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'solver prop', 'debug flags'}, ...
-                                {pp, mesh1, mesh2, ov_info, solver_prop, debug_flags} );
+inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
+                                {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
 
 L2_err = driver(inp_container);
