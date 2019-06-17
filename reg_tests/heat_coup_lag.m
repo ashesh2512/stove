@@ -71,7 +71,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled coincident meshes ', ...
          'using lagrange interpolation of order 1 ']);
 fprintf('\n');
-fprintf('\n');
 
 inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
                                 {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
@@ -97,7 +96,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes ', ...
          'using lagrange interpolation of order 1 ']);
 fprintf('\n'); 
-fprintf('\n');
 
 box2  = [-1.13625,0.86375; -1.13625,0.86375];
 mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
@@ -131,7 +129,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes ', ...
          'using lagrange interpolation of order 2 ']);
 fprintf('\n'); 
-fprintf('\n');
 
 h1 = [ 0.2,  0.2]/2/2;
 h2 = [ 0.2,  0.2]/2/2;
@@ -169,7 +166,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes ', ...
          'using lagrange interpolation of order 3 ']);
 fprintf('\n'); 
-fprintf('\n');
 
 h1 = [ 0.2,  0.2]/2;
 h2 = [ 0.2,  0.2]/2;
@@ -206,7 +202,6 @@ fprintf('\n');
 fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes with constant fringe gap ', ...
          'using lagrange interpolation of order 1 ']);
-fprintf('\n');
 fprintf('\n');
 
 h1 = [ 0.2,  0.2]/2/2;

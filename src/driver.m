@@ -131,7 +131,7 @@ while curr_time <= tot_time
     
     time_step_count = time_step_count+1; % update time step count
     curr_time = curr_time + dt; % update simulation time
-    fprintf('Time = %e \n\n', curr_time);
+    fprintf('\nTime = %e \n\n', curr_time);
     
     % set time stepping parameters
     if(((time_step_count == 1) && (BDF_order == 2)) || (BDF_order == 1))
@@ -173,12 +173,13 @@ while curr_time <= tot_time
         
         dsol = JAC_MAT(glb_fdof,glb_fdof)\RES(glb_fdof); % perform linear solve
         
-        % update solution arrays
-        glb_sol_nm1           = glb_sol_n; 
-        glb_sol_n             = glb_sol_np1;
         glb_sol_np1(glb_fdof) = glb_sol_np1(glb_fdof) - dsol;
         
     end
+    
+    % update solution arrays
+    glb_sol_nm1 = glb_sol_n; 
+    glb_sol_n   = glb_sol_np1;
     
 end
 

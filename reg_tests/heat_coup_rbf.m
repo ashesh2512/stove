@@ -73,7 +73,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes', ...
          'using rbf interpolation with C0 consistency ']);
 fprintf('\n');
-fprintf('\n');
 
 inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
                                 {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
@@ -99,7 +98,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes', ...
          'using rbf interpolation with C1 consistency ']);
 fprintf('\n'); 
-fprintf('\n');
 
 ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
                            'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
@@ -130,7 +128,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes', ...
          'using rbf interpolation with C2 consistency ']);
 fprintf('\n'); 
-fprintf('\n');
 
 h1 = [ 0.2,  0.2]/2/2;
 h2 = [ 0.2,  0.2]/2/2;
@@ -170,7 +167,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes', ...
          'using rbf interpolation with C3 consistency ']);
 fprintf('\n'); 
-fprintf('\n');
 
 h1 = [ 0.2,  0.2]/2;
 h2 = [ 0.2,  0.2]/2;
@@ -210,7 +206,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes with constant fringe gap', ...
          'using rbf interpolation with C0 consistency ']);
 fprintf('\n'); 
-fprintf('\n');
 
 h1 = [ 0.2,  0.2]/2/2;
 h2 = [ 0.2,  0.2]/2/2;
@@ -250,7 +245,6 @@ fprintf('\n');
 fprintf(['Starting test for heat equation on coupled meshes with constant fringe gap', ...
          'using rbf interpolation with C1 consistency ']);
 fprintf('\n'); 
-fprintf('\n');
 
 ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
                            'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...

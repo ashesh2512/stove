@@ -24,7 +24,7 @@ switch pp('prblm')
     case "unsteady scalar adv" % sin(freq*X - vel*time) + sin(freq*Y - vel*time);
 
         vel = pp('velocity');
-        freq = pp();
+        freq = pp('frequency');
 
         sol_anlyt = sin(freq*coords(:,1) - vel(1)*time) + sin(freq*coords(:,2) - vel(2)*time);
         

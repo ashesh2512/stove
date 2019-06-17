@@ -13,7 +13,7 @@ vel = dot(vel,edge_nrml);
 % interpolate transport variable at edge midpoint
 avg_sol = (sol(1) + sol(2))/2;
  
-% assign resiual contribution => \phi*v.ndS
+% assign resiual contribution => v.(\phi*ndS)
 res(1) = res(1) + vel*avg_sol*(+edge_area); % left node
 res(2) = res(2) + vel*avg_sol*(-edge_area); % right node
 
