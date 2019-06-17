@@ -1,4 +1,4 @@
-function plot_sol(mesh1,mesh2,sol,nd_dof_map1,nd_dof_map2)
+function plot_sol(mesh1,mesh2,sol,nd_dof_map1,nd_dof_map2,time)
 
 for idof = 1:size(nd_dof_map1,2)
     % mesh 1 solution
@@ -13,15 +13,16 @@ for idof = 1:size(nd_dof_map1,2)
     coord_y_2 = unique(coords2(:,2));
     surf2     = reshape(sol(nd_dof_map2(:,idof)),[length(coord_x_2),length(coord_y_2)])';
     
+    
     figure()
-    hold on
     surf(coord_x_1,coord_y_1,surf1,'edgecolor','none');
+    hold on
     surf(coord_x_2,coord_y_2,surf2,'edgecolor','none');
-    title('overset solution');
     colorbar;
+    title(sprintf('overset solution at %f',time));
     set(gcf,'color','w');
     set(gca, 'FontSize', 18);
-    view(2); 
+
 end
 
 end

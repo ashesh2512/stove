@@ -115,13 +115,17 @@ glb_fdof = [fdof1;fdof2];
 
 % apply initial conditions to mesh 2
 [sol2_n] = apply_ic(pp,mesh_obj2,nd_dof_map2,init_time);
-
+    
 % asemble global solution array at n
 glb_sol_n = [sol1_n; sol2_n];
 
 % initialize global solution array at n-1
 glb_sol_nm1 = zeros(size(glb_sol_n,1),1);
     
+if (plot_sol_flag)
+    plot_sol(mesh_obj1, mesh_obj2, glb_sol_n, nd_dof_map1, nd_dof_map2, 0.0);
+end
+
 %% Time loop
 
 time_step_count = 0; % time step counter
@@ -173,20 +177,19 @@ while curr_time <= tot_time
         
         dsol = JAC_MAT(glb_fdof,glb_fdof)\RES(glb_fdof); % perform linear solve
         
-        glb_sol_np1(glb_fdof) = glb_sol_np1(glb_fdof) - dsol;
+        glb_sol_np1(glb_fdof) = glb_sol_np1(glb_fdof) - dsol; % update solution after linear solve
         
     end
     
-    % update solution arrays
+    % update temporal solution arrays
     glb_sol_nm1 = glb_sol_n; 
     glb_sol_n   = glb_sol_np1;
     
-end
-
-%% plot solution
-
-if (plot_sol_flag)
-    plot_sol(mesh_obj1, mesh_obj2, glb_sol_np1, nd_dof_map1, nd_dof_map2);
+    % plot solution
+    if (plot_sol_flag)
+        plot_sol(mesh_obj1, mesh_obj2, glb_sol_np1, nd_dof_map1, nd_dof_map2, curr_time);
+    end 
+    
 end
 
 %% compute L2 error

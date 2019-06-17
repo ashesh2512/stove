@@ -79,7 +79,7 @@ for ig = 1:num_grids
         edge_coord = coords(edge_nd,1)';
         
         % define normal to the edge in +ve x direction
-        edge_nrml = [0; 1];
+        edge_nrml = [1; 0];
         
         % extract dof ids associated with nodes of current edge
         edge_dofs = reshape(nd_dof_map(edge_nd,:)',[],1);
