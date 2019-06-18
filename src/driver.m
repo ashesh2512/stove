@@ -6,8 +6,8 @@ function L2_err = driver(inp_container)
 %             - quad4 elements with constant spacing in each direction
 %             - square/rectangular problem domain alignes with x and y axis
 %             - same physics with same material properties solved on both grids
-%             - non-dirichlet boundary conditions cannot be applied
 %             - each boundary is associated with a BC
+%             - non-dirichlet boundary conditions cannot be applied
 %             - only coupled overset solver supported currently
 %             - only BDF 1 and BDF 2 time solvers supported
 
@@ -131,7 +131,7 @@ end
 time_step_count = 0; % time step counter
 curr_time       = init_time; % intialize time of solution
 
-while curr_time <= tot_time
+while curr_time < tot_time-eps
     
     time_step_count = time_step_count+1; % update time step count
     curr_time = curr_time + dt; % update simulation time

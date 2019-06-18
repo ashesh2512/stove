@@ -13,7 +13,6 @@ for idof = 1:size(nd_dof_map1,2)
     coord_y_2 = unique(coords2(:,2));
     surf2     = reshape(sol(nd_dof_map2(:,idof)),[length(coord_x_2),length(coord_y_2)])';
     
-    
     figure()
     surf(coord_x_1,coord_y_1,surf1,'edgecolor','none');
     hold on
