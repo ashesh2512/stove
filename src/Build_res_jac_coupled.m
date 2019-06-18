@@ -226,6 +226,6 @@ for ig = 1:num_grids
 end
 
 % create sparse matrix out of IVEC,JVEC,VVEC
-glb_jac = full(sparse(IVEC,JVEC,VVEC,tot_dofs,tot_dofs));
+glb_jac = sparse(IVEC,JVEC,VVEC,tot_dofs,tot_dofs);
 
 end
