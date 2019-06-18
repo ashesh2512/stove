@@ -24,13 +24,12 @@ switch pp('prblm')
         sol(nd_dof_map(cnd))= cond/4*(cos( 2*pi*coords(cnd,1) ) ...
                                      +cos( 2*pi*coords(cnd,2) ));
 
-    case "unsteady scalar adv" % sin(freq*X - vel*time) + sin(freq*Y - vel*time);
+    case "unsteady scalar adv" % sin(pi*X - vel*time) + sin(pi*Y - vel*time)
         
-        freq = pp('frequency'); % extract frequency
         vel  = pp('velocity');  % extract constant velocity
         
-        sol(nd_dof_map(cnd)) = sin(freq*coords(cnd,1) - vel(1)*time) ... 
-                             + sin(freq*coords(cnd,2) - vel(2)*time);
+        sol(nd_dof_map(cnd)) = sin(pi*coords(cnd,1) - vel(1)*time) ...
+                             + sin(pi*coords(cnd,2) - vel(2)*time);
         
     otherwise
         error('Do not recognize the problem; check problem parameters in driver');
