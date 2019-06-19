@@ -131,7 +131,7 @@ end
 time_step_count = 0; % time step counter
 curr_time       = init_time; % intialize time of solution
 
-while curr_time < tot_time-eps
+while curr_time <= tot_time
     
     time_step_count = time_step_count+1; % update time step count
     curr_time = curr_time + dt; % update simulation time
