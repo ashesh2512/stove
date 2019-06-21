@@ -43,7 +43,7 @@ IVEC = zeros(vec_size,1);
 JVEC = zeros(vec_size,1);
 VVEC = zeros(vec_size,1);
 
-%% loop over all grids
+%% loop over all grids and assemble residual and jacobian
 for ig = 1:num_grids
     
     % extract relevant data for this mesh grid
@@ -70,158 +70,29 @@ for ig = 1:num_grids
     
     donor_nd_dof_map = glb_nd_dof_map{donor_grid}; % extract node to dof map
     
-    %% loop over all edges aligned with x for surface contributions
-    for ex = 1:size(edge_topo_x,1)
-        
-        edge_nd = edge_topo_x(ex,:); % extract nodes belonging to the edge
-        
-        % extract only x-coordinates for the current edge
-        edge_coord = coords(edge_nd,1)';
-        
-        % define normal to the edge in +ve x direction
-        edge_nrml = [1; 0];
-        
-        % extract dof ids associated with nodes of current edge
-        edge_dofs = reshape(nd_dof_map(edge_nd,:)',[],1);
-        
-        % extract field dofs
-        field_dofs = reshape(nd_dof_map(edge_nd(iblank(edge_nd)==1),:)',[],1);
-
-        % compute residual and jacobian contribution from surface
-        % contributions
-        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol_np1(edge_dofs), edge_coord, edge_area_x(ex), edge_nrml, pp );
-        
-        % sum into global reidual and jacobian for field dofs
-        glb_res(field_dofs) = glb_res(field_dofs) + res_srf(ismember(edge_dofs,field_dofs));
-        
-        % store jac_srf in CSC format
-        for r = 1:length(edge_dofs)
-            for c = 1:length(edge_dofs)
-                count = count + 1;
-                IVEC(count,1) = edge_dofs(r);
-                JVEC(count,1) = edge_dofs(c);
-                
-                % add jacobian contribution only for field points
-                if( ismember(edge_dofs(r),field_dofs) ) 
-                    VVEC(count,1) = jac_srf(r,c);
-                end
-            end
-        end
-        
-    end
+    % loop over all edges aligned with x for surface contributions
+    [glb_res,IVEC,JVEC,VVEC,count] = internal_scs_contribution(1,edge_topo_x,edge_area_x, ...
+                                                               coords,iblank,nd_dof_map,glb_sol_np1, ...
+                                                               pp, ...
+                                                               glb_res,IVEC,JVEC,VVEC,count); 
     
-    %% loop over all edges aligned with y for surface contributions
-    for ey = 1:size(edge_topo_y,1)
-        
-        edge_nd = edge_topo_y(ey,:); % extract nodes belonging to the edge
-        
-        % extract only y-coordinates for the current edge
-        edge_coord = coords(edge_nd,2)';
-        
-        % define normal to the edge in +ve x direction
-        edge_nrml = [0; 1];
-        
-        % extract dof ids associated with nodes of current edge
-        edge_dofs = reshape(nd_dof_map(edge_nd,:)',[],1);
-
-        % extract field dofs
-        field_dofs = reshape(nd_dof_map(edge_nd(iblank(edge_nd)==1),:)',[],1);
-        
-        % compute residual and jacobian contribution from surface
-        % contributions
-        [res_srf, jac_srf] = compute_res_jac_srf( glb_sol_np1(edge_dofs), edge_coord, edge_area_y(ey), edge_nrml, pp );
-        
-        % sum into global reidual and jacobian for field dofs
-        glb_res(field_dofs) = glb_res(field_dofs) + res_srf(ismember(edge_dofs,field_dofs));
-
-        % store jac_srf in CSC format
-        for r = 1:length(edge_dofs)
-            for c = 1:length(edge_dofs)
-                count = count + 1;
-                IVEC(count,1) = edge_dofs(r);
-                JVEC(count,1) = edge_dofs(c);
-                
-                % add jacobian contribution only for field points
-                if( ismember(edge_dofs(r),field_dofs) ) 
-                    VVEC(count,1) = jac_srf(r,c);
-                end
-            end
-        end
-        
-    end
+    % loop over all edges aligned with y for surface contributions
+    [glb_res,IVEC,JVEC,VVEC,count] = internal_scs_contribution(2,edge_topo_y,edge_area_y, ...
+                                                               coords,iblank,nd_dof_map,glb_sol_np1, ...
+                                                               pp, ...
+                                                               glb_res,IVEC,JVEC,VVEC,count); 
+                                                   
+    % loop over all nodes for volume contribution
+    [glb_res,IVEC,JVEC,VVEC,count] = cv_contribution(coords,nd_vol,iblank,nd_dof_map, ...
+                                                     glb_sol_np1,glb_sol_n,glb_sol_nm1, ...
+                                                     time_info,pp, ...
+                                                     glb_res,IVEC,JVEC,VVEC,count);
     
-    %% loop over all nodes for volume contribution
-    for nd = 1:size(coords,1)
-        
-        % skip loop for fringe nodes
-        if( iblank(nd) == -1 )
-            continue;
-        end
-        
-        % extract only coordinates for the current node
-        coord = coords(nd,:);
-        
-        % extract dof ids associated with current node
-        nd_dofs = nd_dof_map(nd,:)';
-   
-        % compute residual and jacobian contribution from volumetric
-        % contributions
-        [res_vol, jac_vol] = compute_res_jac_vol(glb_sol_np1(nd_dofs), glb_sol_n(nd_dofs), glb_sol_nm1(nd_dofs), ...
-                                                 coord, nd_vol(nd), time_info, pp);
-        
-        % sum into global reidual and jacobian
-        glb_res(nd_dofs) = glb_res(nd_dofs) + res_vol;
-
-        % store jac_vol in CSC format
-        for r = 1:length(nd_dofs)
-            for c = 1:length(nd_dofs)
-                count = count + 1;
-                IVEC(count,1) = nd_dofs(r);
-                JVEC(count,1) = nd_dofs(c);
-                VVEC(count,1) = jac_vol(r,c);
-            end
-        end
-        
-    end
-    
-    %% loop over all fringe nodes for overset contribution
-    for ifr = 1:size(donor_map,1)
-        
-        frng_nd   = donor_map{ifr,1}; % fringe node
-        donor_nds = donor_map{ifr,2}; % extract donor node ids
-        
-        frng_coords     = coords(frng_nd,:); % extract fringe node coordinates
-        donor_nd_coords = donor_coords(donor_nds,:); % extract donor node coordinates
-        
-        frng_nd_dofs  = reshape(nd_dof_map(frng_nd,:)',[],1); % extract fringe node dofs
-        donor_nd_dofs = reshape(donor_nd_dof_map(donor_nds,:)',[],1); % extract donor node dofs 
-        
-        % compute residual and jacobian contribution from interpolation
-        % contributions
-        coeff = compute_frg_coeff(frng_coords,donor_nd_coords,ov_info);
-                
-        % sum into global reidual and jacobian
-        for r = 1:length(frng_nd_dofs)
-            % sum into residual = frng_sol - N*don_sol
-            glb_res(frng_nd_dofs(r)) = glb_res(frng_nd_dofs(r)) ... 
-                                     + glb_sol_np1(frng_nd_dofs(r)) - coeff'*glb_sol_np1(donor_nd_dofs);
-
-            % jacobian contribution from d(frng_sol)/d(frng_sol)
-            count = count + 1;
-            IVEC(count,1) = frng_nd_dofs(r);
-            JVEC(count,1) = frng_nd_dofs(r);
-            VVEC(count,1) = 1.0;
-            
-            % jacobian contribution from d(-N*don_sol)/d(don_sol)
-            for c = 1:length(donor_nd_dofs)
-                count = count + 1;
-                IVEC(count,1) = frng_nd_dofs(r);
-                JVEC(count,1) = donor_nd_dofs(c);
-                VVEC(count,1) = -coeff(c);
-            end
-        end
-
-    end
+    % loop over all fringe nodes for overset contribution
+    [glb_res,IVEC,JVEC,VVEC,count] = fringe_contribution(ov_info,donor_map, ...
+                                                         coords,donor_coords,nd_dof_map,donor_nd_dof_map, ...
+                                                         glb_sol_np1, ...
+                                                         glb_res,IVEC,JVEC,VVEC,count);
     
 end
 
