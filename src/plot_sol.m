@@ -21,6 +21,7 @@ for idof = 1:size(nd_dof_map1,2)
     title(sprintf('overset solution at %f',time));
     set(gcf,'color','w');
     set(gca, 'FontSize', 18);
+    view(2);
 
 end
 

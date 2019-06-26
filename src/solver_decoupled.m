@@ -7,11 +7,17 @@ function [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_obj1,mesh_o
 O_iters    = lin_sol_info('decoupled loops');
 N_iters    = lin_sol_info('Newton steps');
 resnrmdrop = lin_sol_info('residual tolerance');
+sol_tol    = lin_sol_info('solution tolerance');
+
+% number of points in the mesh
+numpts = size(glb_sol_np1,1)/size(nd_dof_map1,2);
 
 % loop over decoupled mesh solves
 for io = 1:O_iters
     
     fprintf('decoupled loop = %d \n', io);
+    
+    glb_sol_np1_prev = glb_sol_np1;
 
     % perform Newton solve
     for in = 1:N_iters
@@ -47,7 +53,12 @@ for io = 1:O_iters
     glb_sol_np1 = fringe_interpolation({mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, ...
                                         glb_sol_np1, {nd_dof_map1,nd_dof_map2}, ov_info);
     
-    fprintf('\n');
+    L2_diff = sqrt( sum((glb_sol_np1 - glb_sol_np1_prev).^2) / numpts );
+    fprintf('solution diff = %e \n\n', L2_diff);
+
+    if (L2_diff < sol_tol)
+        break;
+    end
 
 end
 
