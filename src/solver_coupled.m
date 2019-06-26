@@ -12,15 +12,24 @@ resnrmdrop   = lin_sol_info('residual tolerance');
 for in = 1:N_iters
 
     % evaluate residual and jacobian matrices for all grids
-    [RES, JAC_MAT] = Build_res_jac_coupled({mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, {iblank1,iblank2}, ...
-                                            glb_sol_np1, glb_sol_n, glb_sol_nm1, {nd_dof_map1,nd_dof_map2}, ...
-                                            ov_info, time_info, pp);
+    [RES, JAC_MAT] = Build_res_jac({mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, {iblank1,iblank2}, ...
+                                   glb_sol_np1, glb_sol_n, glb_sol_nm1, {nd_dof_map1,nd_dof_map2}, ...
+                                   ov_info, time_info, pp);
 
     fprintf('residual norm = %e \n', norm(RES(glb_fdof)));
-    if (norm(RES(glb_fdof)) < resnrmdrop)
-        break;
-    elseif in == N_iters
-        error('Maximum Newton iterations reached, and solution still not converged');
+    if (in == 1)
+        ref_res_norm = norm(RES(glb_fdof));
+        if (ref_res_norm < resnrmdrop)
+            break;
+        end
+    else
+        res_norm = norm(RES(glb_fdof));
+        if (res_norm/ref_res_norm < resnrmdrop)
+            break;
+        end  
+        if (in == N_iters)
+            error('Maximum Newton iterations reached, and solution still not converged');
+        end
     end
 
     dsol = JAC_MAT(glb_fdof,glb_fdof)\RES(glb_fdof); % perform linear solve

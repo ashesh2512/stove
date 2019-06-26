@@ -1,7 +1,7 @@
-function [glb_res,glb_jac] = Build_res_jac_coupled(glb_mesh,glb_donor_map,glb_iblank, ....
-                                                   glb_sol_np1,glb_sol_n,glb_sol_nm1,glb_nd_dof_map, ...
-                                                   ov_info,time_info,pp)
-% assemble coupled residual and jacobian correpesonding to both grids
+function [glb_res,glb_jac] = Build_res_jac(glb_mesh,glb_donor_map,glb_iblank, ....
+                                           glb_sol_np1,glb_sol_n,glb_sol_nm1,glb_nd_dof_map, ...
+                                           ov_info,time_info,pp)
+% assemble residual and jacobian correpesonding to both grids
 
 %% pre-processing
 
@@ -30,8 +30,12 @@ for ig = 1:num_grids
     % determine size for compressed sparse column format vector
     vec_size = vec_size ...
              + jac_srf_size*(size(edge_topo_x,1) + size(edge_topo_y,1)) ...
-             + ndof_nd*(size(coords,1) - size(donor_map,1)) ...
-             + ndof_nd*(sum(cellfun('length',donor_map(:,2))) + size(donor_map,1));
+             + ndof_nd*(size(coords,1) - size(donor_map,1));
+    
+    % account for fringe contributions if this is a decoupled solve
+    if (ov_info('solve type') ~= "decoupled")
+        vec_size = vec_size + ndof_nd*(sum(cellfun('length',donor_map(:,2))) + size(donor_map,1));
+    end
     
 end
 
@@ -87,8 +91,13 @@ for ig = 1:num_grids
                                                      glb_sol_np1,glb_sol_n,glb_sol_nm1, ...
                                                      time_info,pp, ...
                                                      glb_res,IVEC,JVEC,VVEC,count);
-    
-    % loop over all fringe nodes for overset contribution
+
+     % skip contribution from fringe points if decoupled solve
+     if (ov_info('solve type') == "decoupled")
+         continue
+     end
+     
+    % loop over all fringe nodes for fringe interpolation contribution
     [glb_res,IVEC,JVEC,VVEC,count] = fringe_contribution(ov_info,donor_map, ...
                                                          coords,donor_coords,nd_dof_map,donor_nd_dof_map, ...
                                                          glb_sol_np1, ...

@@ -100,27 +100,25 @@ for ind = 1:size(coords2,1)
 end
 
 % extract the free and constrained parts of the system for mesh 1
-[fdof1,dnd1] = get_dof_status(mesh_obj1,bc1,nd_dof_map1);
+[fdof1,dnd1] = get_dof_status(mesh_obj1,bc1,nd_dof_map1,ov_info,iblank1);
 
 % extract the free and constrained parts of the system for mesh 2
-[fdof2,dnd2] = get_dof_status(mesh_obj2,bc2,nd_dof_map2);
+[fdof2,dnd2] = get_dof_status(mesh_obj2,bc2,nd_dof_map2,ov_info,iblank2);
 
 % asemble global array of free dofs 
 glb_fdof = [fdof1; fdof2]; 
 
 % apply initial conditions to mesh 1
-[sol1_n] = apply_ic(pp,mesh_obj1,nd_dof_map1,init_time);
+[sol1_n] = apply_ic(pp,mesh_obj1,init_time);
 
 % apply initial conditions to mesh 2
-[sol2_n] = apply_ic(pp,mesh_obj2,nd_dof_map2,init_time);
+[sol2_n] = apply_ic(pp,mesh_obj2,init_time);
     
 % asemble global solution array at n
 glb_sol_n = [sol1_n; sol2_n];
 
 % initialize global solution array at n-1
-sol1_nm1    = zeros(size(sol1_n,1),1);
-sol2_nm1    = zeros(size(sol2_n,1),1);
-glb_sol_nm1 = [sol1_nm1; sol2_nm1];
+glb_sol_nm1 = zeros(size(glb_sol_n,1),1);
     
 if (plot_sol_flag)
     plot_sol(mesh_obj1, mesh_obj2, glb_sol_n, nd_dof_map1, nd_dof_map2, 0.0);
@@ -159,11 +157,21 @@ while curr_time <= tot_time
     % asemble global solution array at n+1
     glb_sol_np1 = [sol1_np1; sol2_np1];
     
-    % perform strongly coupled linear solve
-    [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_coupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
-                                                         glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
-                                                         ov_info,time_info,lin_sol_info,pp);
-                                  
+    switch ov_info('solve type')
+        case "coupled" % perform strongly coupled linear solve
+            [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_coupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
+                                                                 glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
+                                                                 ov_info,time_info,lin_sol_info,pp);
+                                                             
+        case "decoupled"
+            [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
+                                                                   glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
+                                                                   ov_info,time_info,lin_sol_info,pp);
+                                                               
+        otherwise
+            error('Invalid overset solve type');
+    end
+                   
     % plot solution
     if (plot_sol_flag)
         plot_sol(mesh_obj1, mesh_obj2, glb_sol_np1, nd_dof_map1, nd_dof_map2, curr_time);

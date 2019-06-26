@@ -1,4 +1,4 @@
-function [fdof,const_nd] = get_dof_status(mesh,bc,nd_dof_map)
+function [fdof,const_nd] = get_dof_status(mesh,bc,nd_dof_map,ov_info,iblank)
 % apply initial and boundary conditions based on problem selected
 %
 % Input:  mesh       - mesh object created uing meshgen
@@ -37,5 +37,13 @@ const_nd = unique(const_nd);
 
 % extract array of free dofs
 fdof = setdiff(nd_dof_map, nd_dof_map(const_nd));
+
+% for decoupled overset solve constrain overset nodes too
+if (ov_info('solve type') ~= "decoupled")
+    return;
+end
+
+% update free dof array to exclude dofs on fringe nodes
+fdof = setdiff(fdof, nd_dof_map(iblank==-1));
 
 end

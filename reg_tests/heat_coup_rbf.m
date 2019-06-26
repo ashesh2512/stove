@@ -47,13 +47,15 @@ mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
 % intrp shape      - For RBF this determined the type of RBF. Gaussian is
 %                    only option currently.
 % shape param      - Shape parameter for RBF interpolation.
-% intrp order      - Order of consistency desired in interpolating
+% intrp/poly order - Order of consistency desired in interpolating
 %                    functions. -1 for RBF uses a classical RBF with 0th 
 %                    order consistency.
+% solve type       - coupled / coupled with constraint row elimination /
+%                    decoupled
 ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
-                           'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
+                           'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order', 'solve type'}, ...
                          { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
-                           2.5*max(h2), "rbf", "gaussian", 1.0, -1 });
+                           2.5*max(h2), "rbf", "gaussian", 1.0, -1, "coupled" });
 
 %% time step and linear solve parameters
 
@@ -99,10 +101,7 @@ fprintf(['Starting test for heat equation on coupled meshes', ...
          'using rbf interpolation with C1 consistency ']);
 fprintf('\n'); 
 
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
-                           'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
-                         { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
-                           2.5*max(h2), "rbf", "gaussian", 1.0, 1 });
+ov_info('poly order') = 1;
 
 inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
                                 {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
@@ -129,22 +128,19 @@ fprintf(['Starting test for heat equation on coupled meshes', ...
          'using rbf interpolation with C2 consistency ']);
 fprintf('\n'); 
 
-h1 = [ 0.2,  0.2]/2/2;
-h2 = [ 0.2,  0.2]/2/2;
+h1 = [0.2, 0.2]/2/2;
+h2 = [0.2, 0.2]/2/2;
 
-mesh1 = containers.Map({'dim', 'size', 'bc'}, ...
-                       { box1,     h1,  bc1});
-                   
-mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
-                       { box2,     h2,  bc2});
-                   
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
-                           'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
-                         { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
-                           2.5*max(h2), "rbf", "gaussian", 1.0, 2 });
+mesh1('size') = h1;
+mesh2('size') = h2; 
 
+ov_info('overlap') = [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)];
+ov_info('intrp radius') = 2.5*max(h2);
+ov_info('poly order') = 2;
+                       
 inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
                                 {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
+
 
 L2_err = driver(inp_container);
 gold   = 2.9356976388671850e-03;
@@ -168,19 +164,15 @@ fprintf(['Starting test for heat equation on coupled meshes', ...
          'using rbf interpolation with C3 consistency ']);
 fprintf('\n'); 
 
-h1 = [ 0.2,  0.2]/2;
-h2 = [ 0.2,  0.2]/2;
+h1 = [0.2, 0.2]/2;
+h2 = [0.2, 0.2]/2;
 
-mesh1 = containers.Map({'dim', 'size', 'bc'}, ...
-                       { box1,     h1,  bc1});
-                   
-mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
-                       { box2,     h2,  bc2});
-                   
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
-                           'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
-                         { 2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
-                           2.5*max(h2), "rbf", "gaussian", 1.0, 3 });
+mesh1('size') = h1;
+mesh2('size') = h2;                 
+
+ov_info('overlap') = [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)];
+ov_info('intrp radius') = 2.5*max(h2);
+ov_info('poly order') = 3; 
 
 inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
                                 {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
@@ -207,19 +199,16 @@ fprintf(['Starting test for heat equation on coupled meshes with constant fringe
          'using rbf interpolation with C0 consistency ']);
 fprintf('\n'); 
 
-h1 = [ 0.2,  0.2]/2/2;
-h2 = [ 0.2,  0.2]/2/2;
+h1 = [0.2, 0.2]/2/2;
+h2 = [0.2, 0.2]/2/2;
 
-mesh1 = containers.Map({'dim', 'size', 'bc'}, ...
-                       { box1,     h1,  bc1});
-                   
-mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
-                       { box2,     h2,  bc2});
+mesh1('size') = h1;
+mesh2('size') = h2; 
 
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
-                           'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
-                         { 2, 2, 1, 5, [14*h2(1), 13*h2(1), 13*h2(1), 14*h2(1)], "radial", ...
-                           2.5*max(h2), "rbf", "gaussian", 1.0, -1 });
+ov_info('mandatory frng') = 5;
+ov_info('overlap') = [14*h2(1), 13*h2(1), 13*h2(1), 14*h2(1)];
+ov_info('intrp radius') = 2.5*max(h2);
+ov_info('poly order') = -1;
                        
 inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
                                 {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
@@ -246,10 +235,7 @@ fprintf(['Starting test for heat equation on coupled meshes with constant fringe
          'using rbf interpolation with C1 consistency ']);
 fprintf('\n'); 
 
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
-                           'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
-                         { 2, 2, 1, 5, [14*h2(1), 13*h2(1), 13*h2(1), 14*h2(1)], "radial", ...
-                           2.5*max(h2), "rbf", "gaussian", 1.0, 1 });
+ov_info('poly order') = 1;
                        
 inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
                                 {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );

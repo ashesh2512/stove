@@ -1,9 +1,8 @@
-function sol = apply_ic(pp,mesh,nd_dof_map,init_time)
+function sol = apply_ic(pp,mesh,init_time)
 % apply initial and boundary conditions based on problem selected
 %
 % Input:  pp         - element properties
 %         mesh       - mesh object created uing meshgen
-%         nd_dof_map - map between node and dofs
 %         init_time  - initial time
 
 % Output: sol  - solution array

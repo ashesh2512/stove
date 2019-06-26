@@ -50,8 +50,8 @@ mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
 % intrp order      - Order of consistency desired in interpolating
 %                    functions. -1 for RBF uses a classical RBF with 0th 
 %                    order consistency.
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order'}, ...
-                         {  2, 2, 1, 2, [4*0.1, 4*0.1, 4*0.1, 4*0.1], "tensor", 1 });
+ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order', 'solve type'}, ...
+                         {  2, 2, 1, 2, [4*0.1, 4*0.1, 4*0.1, 4*0.1], "tensor", 1, "coupled" });
 
 %% time step and linear solve parameters
 dt = min(h2./pp('velocity'));
@@ -101,15 +101,10 @@ fprintf(['Starting test for scalar linear advection equation on coupled meshes '
 fprintf('\n');
 
 % near body mesh
-box2 = [-1.13625,0.86375; -1.13625,0.86375];
-h2   = [             0.2,              0.2];
+mesh2('dim') = [-1.13625,0.86375; -1.13625,0.86375];
 
-mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
-                       { box2,     h2,  bc2});
-                   
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order'}, ...
-                         {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 1 });
-                     
+ov_info('overlap') = [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)];
+                                        
 %create container map for easy addition and removal of variables without
 %having to change other input files
 inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
