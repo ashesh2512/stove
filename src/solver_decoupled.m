@@ -13,8 +13,7 @@ for io = 1:O_iters
     
     fprintf('decoupled loop = %d \n', io);
 
-    % perform coupled Newton solve
-    % loop over newton steps
+    % perform Newton solve
     for in = 1:N_iters
 
         % evaluate residual and jacobian matrices for all grids
@@ -44,7 +43,7 @@ for io = 1:O_iters
 
     end
     
-    % determine solution at fringe points for mesh 1
+    % determine solution at fringe points for all meshes
     glb_sol_np1 = fringe_interpolation({mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, ...
                                         glb_sol_np1, {nd_dof_map1,nd_dof_map2}, ov_info);
     
