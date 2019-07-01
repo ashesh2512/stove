@@ -37,7 +37,6 @@ clc; close all; clear all;
 %                              {          0.0,          2.0,          dt,           2} );
 % 
 % lin_sol_info = containers.Map({'Newton steps', 'residual tolerance'},
-% ...clf
 %                               {            10,                1e-09});
 
 del    = 0.2;
