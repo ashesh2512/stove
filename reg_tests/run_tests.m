@@ -13,13 +13,19 @@ total_fail = 0; % counter for tests failed
 total_pass = total_pass+num_pass;
 total_fail = total_fail+num_fail;
 
+%% test heat equation on decoupled meshes using lagrange interpolation
+[num_pass,num_fail] = heat_decoup_lag(tol);
+
+total_pass = total_pass+num_pass;
+total_fail = total_fail+num_fail;
+
 %% test heat equation on coupled meshes using rbf interpolation
 [num_pass,num_fail] = heat_coup_rbf(tol);
 
 total_pass = total_pass+num_pass;
 total_fail = total_fail+num_fail;
 
-%% test heat equation on coupled meshes using rbf interpolation
+%% test advection equation on coupled meshes using rbf interpolation
 [num_pass,num_fail] = adv_coup_lag(tol);
 
 total_pass = total_pass+num_pass;
