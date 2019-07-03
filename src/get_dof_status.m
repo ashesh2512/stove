@@ -44,6 +44,6 @@ if (ov_info('solve type') ~= "decoupled")
 end
 
 % update free dof array to exclude dofs on fringe nodes
-fdof = setdiff(fdof, nd_dof_map(iblank==-1));
+fdof = setdiff(fdof, nd_dof_map(iblank==-1,:));
 
 end

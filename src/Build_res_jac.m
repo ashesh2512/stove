@@ -33,8 +33,10 @@ for ig = 1:num_grids
              + ndof_nd*(size(coords,1) - size(donor_map,1));
     
     % account for fringe contributions if this is a decoupled solve
-    if (ov_info('solve type') ~= "decoupled")
+    if (ov_info('solve type') == "coupled")
         vec_size = vec_size + ndof_nd*(sum(cellfun('length',donor_map(:,2))) + size(donor_map,1));
+    elseif (ov_info('solve type') == "decoupled iterative")
+        vec_size = vec_size + ndof_nd*size(donor_map,1);
     end
     
 end
@@ -101,7 +103,7 @@ for ig = 1:num_grids
     [glb_res,IVEC,JVEC,VVEC,count] = fringe_contribution(ov_info,donor_map, ...
                                                          coords,donor_coords,nd_dof_map,donor_nd_dof_map, ...
                                                          glb_sol_np1, ...
-                                                         glb_res,IVEC,JVEC,VVEC,count);
+                                                         glb_res,IVEC,JVEC,VVEC,count,false);
     
 end
 

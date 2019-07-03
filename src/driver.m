@@ -109,10 +109,10 @@ end
 glb_fdof = [fdof1; fdof2]; 
 
 % apply initial conditions to mesh 1
-[sol1_n] = apply_ic(pp,mesh_obj1,init_time);
+[sol1_n] = apply_ic_n(pp,mesh_obj1,init_time);
 
 % apply initial conditions to mesh 2
-[sol2_n] = apply_ic(pp,mesh_obj2,init_time);
+[sol2_n] = apply_ic_n(pp,mesh_obj2,init_time);
     
 % asemble global solution array at n
 glb_sol_n = [sol1_n; sol2_n];
@@ -164,6 +164,11 @@ while curr_time <= tot_time
                                                                  ov_info,time_info,lin_sol_info,pp);
                                                              
         case "decoupled"
+            [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
+                                                       glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
+                                                       ov_info,time_info,lin_sol_info,pp);
+                                                               
+        case "decoupled iterative"
             [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
                                                                    glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
                                                                    ov_info,time_info,lin_sol_info,pp);

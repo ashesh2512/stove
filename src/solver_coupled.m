@@ -5,7 +5,9 @@ function [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_coupled(mesh_obj1,mesh_obj
 
 % extract linear solver properties
 N_iters      = lin_sol_info('Newton steps');
-resnrmdrop   = lin_sol_info('residual tolerance');
+resnrmdrop   = lin_sol_info('Newton tolerance');
+
+gmres_iter_count = 0; % initialize gmres iteration counter
 
 % perform coupled Newton solve
 % loop over newton steps
@@ -32,8 +34,20 @@ for in = 1:N_iters
         end
     end
 
-    dsol = JAC_MAT(glb_fdof,glb_fdof)\RES(glb_fdof); % perform linear solve
+    if(lin_sol_info('type') == "GMRES")
+        % build preconditioner for JAC_MAT
+        [L,U] = ilu(JAC_MAT(glb_fdof,glb_fdof),struct('type','ilutp','droptol',1e-3));
 
+        % GMRES solves
+        [dsol,~,~,~,resvec] = gmres(JAC_MAT(glb_fdof,glb_fdof),RES(glb_fdof),[], ...
+                                    lin_sol_info('GMRES tolerance'),lin_sol_info('GMRES iterations'),L,U); 
+        gmres_iter_count = gmres_iter_count + length(resvec)-1;
+        
+        fprintf('Total GMRES iterations = %d \n\n', gmres_iter_count);
+    else
+       dsol = JAC_MAT(glb_fdof,glb_fdof)\RES(glb_fdof); % perform direct solve
+    end
+            
     glb_sol_np1(glb_fdof) = glb_sol_np1(glb_fdof) - dsol; % update solution after linear solve
 
 end

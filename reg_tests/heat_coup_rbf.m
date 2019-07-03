@@ -60,10 +60,10 @@ ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory
 %% time step and linear solve parameters
 
 time_sol_info = containers.Map({'init time', 'total time', 'time step', 'BDF order'}, ...
-                             {          0.0,          2.0,         100,           2} );
+                               {          0.0,          2.0,         100,         2} );
 
-lin_sol_info = containers.Map({'Newton steps', 'residual tolerance'}, ...
-                              {            10,                1e-09} );
+lin_sol_info = containers.Map({  'type', 'Newton steps', 'Newton tolerance'}, ...
+                              {"direct",             10,              1e-09} );
 
 %% debug/display flags
 debug_flags = containers.Map({'plot mesh', 'plot hole cut', 'print fringe gap', 'plot sol'}, ...

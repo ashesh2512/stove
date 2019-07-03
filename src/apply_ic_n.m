@@ -1,4 +1,4 @@
-function sol = apply_ic(pp,mesh,init_time)
+function sol = apply_ic_n(pp,mesh,init_time)
 % apply initial and boundary conditions based on problem selected
 %
 % Input:  pp         - element properties
