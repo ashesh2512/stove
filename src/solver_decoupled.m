@@ -54,11 +54,11 @@ for io = 1:O_iters
             end
         end
         
-        if(ov_info('solve type') == "decoupled iterative") %12,30,60,
+        if(ov_info('solve type') == "decoupled iterative")
             dsol = iterative_fringe_update(RES,JAC_MAT,mesh_obj1,mesh_obj2,donor_map1,donor_map2, ...
                                            glb_sol_np1,nd_dof_map1,nd_dof_map2,glb_fdof,ov_info,lin_sol_info);
         else
-            if(lin_sol_info('type') == "GMRES") % 45
+            if(lin_sol_info('type') == "GMRES")
                 % build preconditioner for JAC_MAT
                 [L,U] = ilu(JAC_MAT(glb_fdof,glb_fdof),struct('type','ilutp','droptol',1e-3));
                 
