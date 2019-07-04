@@ -41,6 +41,19 @@ dt        = time_info('time step');
 % extract linear solver info
 lin_sol_info = inp_container('lin solver prop');
 
+% perform certain checks in regards to combination of solver types and
+% fringe update option selected
+if (ov_info('solve type') == "coupled" && isKey(ov_info,'fringe update'))
+    if (ov_info('fringe update') == "iterative")
+        error('Invalid fringe update for decoupled meshes using a direct solver');
+    end
+end
+if (ov_info('solve type') == "decoupled" && lin_sol_info('type') == "direct" && isKey(ov_info,'fringe update'))
+    if (ov_info('fringe update') == "iterative")
+        error('Invalid fringe update for decoupled meshes using a direct solver');
+    end
+end
+
 % extract debug/display flags
 debug_flags        = inp_container('debug flags');
 plot_mesh_flag     = debug_flags('plot mesh');
@@ -100,13 +113,16 @@ for ind = 1:size(coords2,1)
 end
 
 % extract the free and constrained parts of the system for mesh 1
-[fdof1,dnd1] = get_dof_status(mesh_obj1,bc1,nd_dof_map1,ov_info,iblank1);
+[fdof1,fld_dof1,dnd1] = get_dof_status(mesh_obj1,bc1,nd_dof_map1,ov_info,iblank1,lin_sol_info);
 
 % extract the free and constrained parts of the system for mesh 2
-[fdof2,dnd2] = get_dof_status(mesh_obj2,bc2,nd_dof_map2,ov_info,iblank2);
+[fdof2,fld_dof2,dnd2] = get_dof_status(mesh_obj2,bc2,nd_dof_map2,ov_info,iblank2,lin_sol_info);
 
 % asemble global array of free dofs 
 glb_fdof = [fdof1; fdof2]; 
+
+% asemble global array of field dofs 
+glb_fld_dof = [fld_dof1; fld_dof2]; 
 
 % apply initial conditions to mesh 1
 [sol1_n] = apply_ic_n(pp,mesh_obj1,init_time);
@@ -162,16 +178,19 @@ while curr_time <= tot_time
             [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_coupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
                                                                  glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
                                                                  ov_info,time_info,lin_sol_info,pp);
-                                                             
-        case "decoupled"
-            [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
-                                                       glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
-                                                       ov_info,time_info,lin_sol_info,pp);
                                                                
-        case "decoupled iterative"
-            [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
-                                                                   glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
-                                                                   ov_info,time_info,lin_sol_info,pp);
+        case "decoupled" % perform weakly coupled linear solve
+            switch lin_sol_info('type')
+                case "direct"
+                    [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
+                                                                           glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
+                                                                           ov_info,time_info,lin_sol_info,pp);
+                                                                       
+                case "iterative"
+                    [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled_iterative(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
+                                                                                     glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof,glb_fld_dof, ...
+                                                                                     ov_info,time_info,lin_sol_info,pp);
+            end
                                                                
         otherwise
             error('Invalid overset solve type');

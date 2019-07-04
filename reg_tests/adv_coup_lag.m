@@ -50,8 +50,8 @@ mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
 % intrp order      - Order of consistency desired in interpolating
 %                    functions. -1 for RBF uses a classical RBF with 0th 
 %                    order consistency.
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order', 'solve type'}, ...
-                         {  2, 2, 1, 2, [4*0.1, 4*0.1, 4*0.1, 4*0.1], "tensor", 1, "coupled" });
+ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order', 'solve type','fringe update'}, ...
+                         {  2, 2, 1, 2, [4*0.1, 4*0.1, 4*0.1, 4*0.1], "tensor", 1, "coupled", "direct" });
 
 %% time step and linear solve parameters
 dt = min(h2./pp('velocity'));

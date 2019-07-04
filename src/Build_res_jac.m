@@ -94,8 +94,8 @@ for ig = 1:num_grids
                                                      time_info,pp, ...
                                                      glb_res,IVEC,JVEC,VVEC,count);
 
-     % skip contribution from fringe points if decoupled solve
-     if (ov_info('solve type') == "decoupled")
+     % skip contribution from fringe points for fully decoupled solve
+     if (ov_info('solve type') == "decoupled" && ov_info('fringe update') == "direct")
          continue
      end
      

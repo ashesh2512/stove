@@ -52,8 +52,8 @@ mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
 %                    order consistency.
 % solve type       - coupled / coupled with constraint row elimination /
 %                    decoupled
-ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order', 'solve type'}, ...
-                         {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 2, "decoupled" });
+ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order', 'solve type', 'fringe update'}, ...
+                         {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 2, "decoupled", "direct" });
 
 %% time step and linear solve parameters
 

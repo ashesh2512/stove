@@ -1,12 +1,12 @@
-function [fdof,const_nd] = get_dof_status(mesh,bc,nd_dof_map,ov_info,iblank)
+function [fdof,fld_dof,const_nd] = get_dof_status(mesh,bc,nd_dof_map,ov_info,iblank,lin_info)
 % apply initial and boundary conditions based on problem selected
 %
 % Input:  mesh       - mesh object created uing meshgen
 %         bc         - boundary conditions
 %         nd_dof_map - map between node and dofs
 %
-% Output: sol      - solution array
-%         fdof     - array of non-constrained degrees of freedom
+% Output: fdof     - array of non-constrained degrees of freedom
+%         fld_dof  - degrees of freedom corresponding to field nodes
 %         const_nd - array of constrained nodes
 
 % extract edge topologies
@@ -38,9 +38,12 @@ const_nd = unique(const_nd);
 % extract array of free dofs
 fdof = setdiff(nd_dof_map, nd_dof_map(const_nd));
 
-% for decoupled overset solve constrain overset nodes too
-if (ov_info('solve type') ~= "decoupled")
-    return;
+% set array of field dofs
+fld_dof = nd_dof_map(iblank==1,:);
+
+% for a fully decoupled overset solve constrain overset nodes too
+if ~(ov_info('solve type') == "decoupled" && ov_info('fringe update') == "direct")
+    return
 end
 
 % update free dof array to exclude dofs on fringe nodes

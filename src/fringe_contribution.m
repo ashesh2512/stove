@@ -21,7 +21,7 @@ for ifr = 1:size(donor_map,1)
 
     % sum into global reidual and jacobian
     for r = 1:length(frng_nd_dofs)
-        if (ov_info('solve type') == "decoupled iterative")
+        if (ov_info('fringe update') == "iterative")
             % DBC = N*don_sol
             glb_res(frng_nd_dofs(r)) = coeff'*sol_np1(donor_nd_dofs);
         else
@@ -41,7 +41,7 @@ for ifr = 1:size(donor_map,1)
 
         % skip contributions from Jacobian if updating fringe contributions
         % during an iterative solve
-        if (ov_info('solve type') == "decoupled iterative")
+        if (ov_info('fringe update') == "iterative")
             continue
         end
         

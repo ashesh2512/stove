@@ -79,3 +79,38 @@ view(176,20.6);
 % pos = get(fig,'Position');
 % set(fig,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
 % print(fig,'iterations_error_tradeoff','-dpdf','-r0')
+
+%% problem parameters
+                   
+% implicit hole cutting options -- apply to both grids
+% ov_info = containers.Map({'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
+%                           'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order', 'solve type', 'fringe update', 'exchange iterations'}, ...
+%                          {2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "radial", ...
+%                           2.5*max(h2), "rbf", "gaussian", 1.0, 2, "decoupled", "direct", 25});
+% 
+% % time step and linear solve parameters
+% lin_sol_info = containers.Map({'type', 'Newton steps', 'Newton tolerance', 'GMRES tolerance', 'GMRES iterations', ...
+%                                'decoupled loops', 'solution tolerance', 'dsol tolerance'}, ...
+%                               { "iterative", 1, 1e-09, 1e-06, 100, 200, 1e-5, 1e-9});
+                          
+del    = 0.2;
+h      = [del del/2 del/4 del/8];
+L2_p2  = [5.152661e-02 9.918104e-03 2.935698e-03 7.070890e-04];
+L2_p2_1em4_dir = [5.1542861272801152e-02,9.9165650735241716e-03,2.9457114181139889e-03,8.7448687582701817e-04];
+L2_p2_1em5_dir = [5.1529189755299389e-02,9.9178520553963329e-03,2.9366559652752172e-03,7.2237728382130149e-04];
+
+y_vals2= 0.1*h.^2;
+
+figure(3)
+clf
+hold on
+plot(h, L2_p2,'--*r','LineWidth', 2);
+plot(h, L2_p2_1em5_dir,'--*b','LineWidth', 2);
+plot(h,y_vals2,'-k','LineWidth', 2);
+set(gca, 'XScale', 'log', 'YScale', 'log');
+xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
+legend('RBF$(C^2)$, coupled','RBF$(C^2)$, tol=1e-05','slope=2','Interpreter','latex');
+set(gcf,'color','w');
+set(gca, 'FontSize', 18);
+
+
