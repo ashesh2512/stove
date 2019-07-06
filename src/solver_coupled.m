@@ -34,7 +34,7 @@ for in = 1:N_iters
         end
     end
 
-    if(lin_sol_info('type') == "GMRES")
+    if(lin_sol_info('type') == "iterative")
         % build preconditioner for JAC_MAT
         [L,U] = ilu(JAC_MAT(glb_fdof,glb_fdof),struct('type','ilutp','droptol',1e-3));
 
