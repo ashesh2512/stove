@@ -144,7 +144,7 @@ plot(1:length(L2_C2_hp2_itr), L2_C2_hp2_itr,'--*b','LineWidth', 2);
 set(gca, 'YScale', 'log');
 xlabel('GMRES iterations','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
 title('$h=0.2$','Interpreter','latex');
-legend('RBF$(C^2)$, coupled','RBF$(C^2)$, decoupled','Interpreter','latex');
+legend('RBF$(C^2)$, coupled, 4 iterations','RBF$(C^2)$, decoupled','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);
 
@@ -155,7 +155,7 @@ plot(1:length(L2_C2_hp1_itr), L2_C2_hp1_itr,'--*b','LineWidth', 2);
 set(gca, 'YScale', 'log');
 xlabel('GMRES iterations','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
 title('$h=0.1$','Interpreter','latex');
-legend('RBF$(C^2)$, coupled','RBF$(C^2)$, decoupled','Interpreter','latex');
+legend('RBF$(C^2)$, coupled, 6 iterations','RBF$(C^2)$, decoupled','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);
 
@@ -166,7 +166,7 @@ plot(1:length(L2_C2_hp05_itr), L2_C2_hp05_itr,'--*b','LineWidth', 2);
 set(gca, 'YScale', 'log');
 xlabel('GMRES iterations','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
 title('$h=0.05$','Interpreter','latex');
-legend('RBF$(C^2)$, coupled','RBF$(C^2)$, decoupled','Interpreter','latex');
+legend('RBF$(C^2)$, coupled, 10 iterations','RBF$(C^2)$, decoupled','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);
 
@@ -177,23 +177,25 @@ plot(1:length(L2_C2_hp025_itr), L2_C2_hp025_itr,'--*b','LineWidth', 2);
 set(gca, 'YScale', 'log');
 xlabel('GMRES iterations','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
 title('$h=0.025$','Interpreter','latex');
-legend('RBF$(C^2)$, coupled','RBF$(C^2)$, decoupled','Interpreter','latex');
+legend('RBF$(C^2)$, coupled, 16 iterations','RBF$(C^2)$, decoupled','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);
 
 
 del              = 0.2;
 h                = [del del/2 del/4 del/8];
-GMRES_itr_coup   = [4, 7, 12, 19];
-GMRES_itr_decoup = [10, 20, 50, 150];
+GMRES_coup       = [4, 6, 10, 16];
+GMRES_decoup_itr = [10, 25, 90, 200];
+GMRES_decoup     = [56, 216, 612, 2298];
 
 figure(5)
 clf
 hold on
-plot(h,   GMRES_itr_coup,'--*k','LineWidth', 2);
-plot(h, GMRES_itr_decoup,'--*r','LineWidth', 2);
+plot(h,   GMRES_coup,'--*k','LineWidth', 2);
+plot(h,     GMRES_decoup,'--*r','LineWidth', 2);
+plot(h, GMRES_decoup_itr,'--*b','LineWidth', 2);
 set(gca, 'XScale', 'log');
 xlabel('$h$','Interpreter','latex'); ylabel('GMRES iterations','Interpreter','latex');
-legend('RBF$(C^2)$, coupled','RBF$(C^2)$, decoupled with intermediate fringe update','Interpreter','latex');
+legend('RBF$(C^2)$, coupled','RBF$(C^2)$, decoupled','RBF$(C^2)$, decoupled with intermediate fringe update','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);
