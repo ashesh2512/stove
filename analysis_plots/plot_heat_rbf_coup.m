@@ -41,17 +41,36 @@ y_vals2= 0.1*h.^2;
 figure(1)
 clf
 hold on
+plot(h,y_vals1,'-m','LineWidth', 2);
+plot(h,y_vals2,'-k','LineWidth', 2);
 plot(h,L2_pm1,'--*r','LineWidth', 2);
 plot(h, L2_p1,'--*g','LineWidth', 2);
 plot(h, L2_p2,'--*c','LineWidth', 2);
 plot(h, L2_p3,'--*b','LineWidth', 2);
-plot(h,y_vals1,'-m','LineWidth', 2);
-plot(h,y_vals2,'-k','LineWidth', 2);
 set(gca, 'XScale', 'log', 'YScale', 'log');
 xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
-legend('RBF', 'RBF+p=1', 'RBF+p=2', 'RBF+p=3', 'slope=1', 'slope=2','Interpreter','latex');
+legend('slope=1', 'slope=2', 'RBF($C^0$)', 'RBF($C^1$)', 'RBF($C^2$)', 'RBF($C^3$)', 'Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 24);
+
+p1 = [0.01, 0.032, 0.143, 0.63];
+p2 = [0.01, 0.033, 0.171, 0.76];
+p3 = [0.011,0.039, 0.205, 0.95];
+c2 = [0.02,  0.21, 1.178, 5.38];
+c3 = [0.027, 0.27, 1.250, 5.47];
+
+figure(2)
+clf
+hold on
+plot(h,p1,'--*c','LineWidth', 2);
+plot(h,p2,'--*b','LineWidth', 2);
+plot(h,p3,'--*r','LineWidth', 2);
+plot(h,c2,'--*m','LineWidth', 2);
+plot(h,c3,'--*k','LineWidth', 2);
+xlabel('h','Interpreter','latex'); ylabel('Wall time','Interpreter','latex');
+legend('linear Lagrange','quadratic Lagrange','cubic Lagrange','RBF($C^2$)','RBF($C^3$)','Interpreter','latex');
+set(gcf,'color','w');
+set(gca, 'FontSize', 24);
 
 %% problem parameters
 % near body mesh 2 fringe gap: bottom: 7.362500e-01, right: 6.637500e-01, top: 6.637500e-01, left:7.362500e-01 
@@ -83,7 +102,7 @@ L2_p1  = [5.458472e-02 1.240483e-02 2.983622e-03 7.620311e-04];
 y_vals1= 5*h;
 y_vals2= 0.1*h.^2;
 
-figure(2)
+figure(3)
 clf
 hold on
 plot(h, L2_pm1,'--*r','LineWidth', 2);
@@ -102,16 +121,17 @@ set(gca, 'FontSize', 18);
 % ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', ...
 %                            'intrp radius', 'intrp type', 'intrp shape', 'shape param', 'poly order'}, ...
 %                          { 2, 2, 1, 9, [29*h2(1), 26*h2(1), 26*h2(1), 29*h2(1)], "radial", ...
-%                            2.5*max(h2), "rbf", "gaussian", 1.0, 1 });
+%                            2.5*max(h2), "rbf", "gaussian", 1.0, 2 });
                        
 nnodes = [18,37,64,92,130,176,222,280,340,416,488,565,652,746,854,956,1070,1188,1313,1450,1580,1734,1886,2040,2200];
 time   = [0.012,0.014,0.015,0.016,0.019,0.023,0.026,0.033,0.041,0.049,0.06,0.07,0.085,0.1,0.13,0.16,0.2,0.24,0.27,0.33,0.38,0.47,0.54,0.64,0.76];
 
-figure(3)
+figure(4)
 clf
 hold on
 plot(nnodes, time/time(1),'--+b','LineWidth', 2);
-xlabel('number of nodes','Interpreter','latex'); ylabel('time relative to 1st point','Interpreter','latex');
-title('RBF+p=2','Interpreter','latex');
+xlabel('number of donor nodes','Interpreter','latex'); ylabel('Normalized wall time','Interpreter','latex');
+title('RBF($C^2$)','Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 24);
+

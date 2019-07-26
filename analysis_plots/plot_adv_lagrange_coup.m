@@ -76,10 +76,10 @@ y_vals = 25*h.^2;
 figure(2)
 clf
 hold on
-plot(h,L2,'--*r','LineWidth', 2);
 plot(h,y_vals,  '-k','LineWidth', 2);
+plot(h,L2,'--*r','LineWidth', 2);
 set(gca, 'XScale', 'log', 'YScale', 'log');
 xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
-legend('overset p=1', 'slope=2','Interpreter','latex');
+legend('slope=2', 'linear Lagrange', 'Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 24);

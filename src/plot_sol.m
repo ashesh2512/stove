@@ -20,7 +20,7 @@ for idof = 1:size(nd_dof_map1,2)
     colorbar;
     title(sprintf('overset solution at %f',time));
     set(gcf,'color','w');
-    set(gca, 'FontSize', 18);
+    set(gca, 'FontSize', 28);
     view(2);
 
 end

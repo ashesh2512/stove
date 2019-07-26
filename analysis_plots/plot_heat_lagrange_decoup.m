@@ -79,9 +79,9 @@ hold on
 h2 = plot3(iterations,0.1*oneD_arr,L2_hp1,'--*m','LineWidth', 2);
 h3 = plot3(iterations,0.05*oneD_arr,L2_hp05,'--*b','LineWidth', 2);
 h4 = plot3(iterations,0.025*oneD_arr,L2_hp025,'--*c','LineWidth', 2);
-h5 = plot3([ 10  10  10  10],h,1.1*h.^2,'-k','LineWidth', 2);
-plot3([25 25 25 25],h,1.1*h.^2,'-k','LineWidth', 2);
-plot3([40 40 40 40],h,1.1*h.^2,'-k','LineWidth', 2);
+h5 = plot3([ 10  10  10  10],h,1.1*y_vals,'-k','LineWidth', 2);
+plot3([25 25 25 25],h,1.1*y_vals,'-k','LineWidth', 2);
+plot3([40 40 40 40],h,1.1*y_vals,'-k','LineWidth', 2);
 grid on;
 set(gca, 'YScale', 'log', 'ZScale', 'log');
 xlabel('decoupled iterations','Interpreter','latex'); ylabel('h','Interpreter','latex'); zlabel('$L_2$','Interpreter','latex');

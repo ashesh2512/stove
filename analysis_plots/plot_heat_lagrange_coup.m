@@ -40,9 +40,9 @@ plot(h,y_vals,  '-k','LineWidth', 2);
 set(gca, 'XScale', 'log', 'YScale', 'log');
 xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
 title('coincident meshes','Interpreter','latex');
-legend('overset p=1', 'slope=2','Interpreter','latex');
+legend('slope=2', 'single mesh', 'Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 24);
 
 %% problem properties               
 % % background mesh
@@ -61,23 +61,23 @@ h      = [del del/2 del/4 del/8];
 L2_p1  = [6.526605e-02 9.348554e-03 6.497774e-03 5.626061e-03];
 L2_p2  = [4.684465e-02 8.873482e-03 3.253635e-03 6.685104e-04];
 L2_p3  = [4.962786e-02 1.088594e-02 2.814165e-03 7.110412e-04];
-y_vals1= 5*h;
-y_vals2= 0.1*h.^2;
+y_vals1= 1*h;
+y_vals2= 0.5*h.^2;
 
 figure(2)
 subplot(1,2,1)
 clf
 hold on
+plot(h,y_vals1,'-m','LineWidth', 2);
+plot(h,y_vals2,'-k','LineWidth', 2);
 plot(h,L2_p1,'--*r','LineWidth', 2);
 plot(h,L2_p2,'--*g','LineWidth', 2);
 plot(h,L2_p3,'--*b','LineWidth', 2);
-plot(h,y_vals1,'-m','LineWidth', 2);
-plot(h,y_vals2,'-k','LineWidth', 2);
 set(gca, 'XScale', 'log', 'YScale', 'log');
 xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
-legend('overset p=1', 'overset p=2', 'overset p=3', 'slope=1', 'slope=2','Interpreter','latex');
+legend('slope=1', 'slope=2', 'linear Lagrange', 'quadratic Lagrange', 'cubic Lagrange', 'Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 24);
 
 gap = [7.362500e-01, 6.637500e-01, 6.637500e-01, 7.362500e-01;
        3.362500e-01, 3.637500e-01, 3.637500e-01, 3.362500e-01;
@@ -88,31 +88,31 @@ figure(3)
 clf
 subplot(2,2,1)
 plot(h, gap(:,1),'--*r','LineWidth', 2)
-xlabel('h','Interpreter','latex'); ylabel('overlap','Interpreter','latex');
-title('bottom edge','Interpreter','latex');
+xlabel('h','Interpreter','latex'); ylabel('fringe gap','Interpreter','latex');
+title('bottom','Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 16);
 
 subplot(2,2,2)
 plot(h, gap(:,2),'--*r','LineWidth', 2)
-xlabel('h','Interpreter','latex'); ylabel('overlap','Interpreter','latex');
-title('right edge','Interpreter','latex');
+xlabel('h','Interpreter','latex'); ylabel('fringe gap','Interpreter','latex');
+title('right','Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 16);
 
 subplot(2,2,3)
 plot(h, gap(:,3),'--*r','LineWidth', 2)
-xlabel('h','Interpreter','latex'); ylabel('overlap','Interpreter','latex');
-title('top edge','Interpreter','latex');
+xlabel('h','Interpreter','latex'); ylabel('fringe gap','Interpreter','latex');
+title('top','Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 16);
 
 subplot(2,2,4)
 plot(h, gap(:,4),'--*r','LineWidth', 2)
-xlabel('h','Interpreter','latex'); ylabel('overlap','Interpreter','latex');
-title('left edge','Interpreter','latex');
+xlabel('h','Interpreter','latex'); ylabel('fringe gap','Interpreter','latex');
+title('left','Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 16);
 
 %% problem properties               
 % near body mesh 2 fringe gap: bottom: 7.362500e-01, right: 6.637500e-01, top: 6.637500e-01, left:7.362500e-01 
@@ -138,12 +138,11 @@ y_vals2= 0.1*h.^2;
 figure(4)
 clf
 hold on
-plot(h,L2_p1,'--*r','LineWidth', 2);
-plot(h,y_vals1,'-m','LineWidth', 2);
 plot(h,y_vals2,'-k','LineWidth', 2);
+plot(h,L2_p1,'--*r','LineWidth', 2);
 set(gca, 'XScale', 'log', 'YScale', 'log');
 xlabel('h','FontSize',18,'Interpreter','latex'); ylabel('$L_2$','FontSize',18,'Interpreter','latex');
-legend('overset p=1', 'slope=1', 'slope=2','Interpreter','latex');
+legend('slope=2', 'linear Lagrange', 'Interpreter','latex');
 title('constant overlap','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);

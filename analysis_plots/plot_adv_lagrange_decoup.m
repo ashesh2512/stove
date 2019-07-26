@@ -46,15 +46,14 @@ L2_1em1 = [1.3563575177060619e-01, 3.7829257539133951e-02, 9.9844824580420759e-0
 L2_1em4 = [1.3563402647239917e-01, 3.7807621123918798e-02, 9.9859756176621326e-03, 2.6280764437477504e-03];
 y_vals  = 25*h.^2;
 
-figure(2)
+figure(1)
 clf
 hold on
-plot(h,L2,'--*r','LineWidth', 2);
-plot(h,L2_1em1,'--*g','LineWidth', 2);
-plot(h,L2_1em4,'--*b','LineWidth', 2);
 plot(h,y_vals,  '-k','LineWidth', 2);
+plot(h,L2,'--*r','LineWidth', 2);
+plot(h,L2_1em1,'--*b','LineWidth', 2);
 set(gca, 'XScale', 'log', 'YScale', 'log');
 xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
-legend('coupled', '3 decoupled iterations','slope=2','Interpreter','latex');
+legend('slope=2','coupled', '2 decoupled iterations','Interpreter','latex');
 set(gcf,'color','w');
-set(gca, 'FontSize', 18);
+set(gca, 'FontSize', 24);
