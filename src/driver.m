@@ -7,8 +7,7 @@ function L2_err = driver(inp_container)
 %             - square/rectangular problem domain alignes with x and y axis
 %             - same physics with same material properties solved on both grids
 %             - each boundary is associated with a BC
-%             - non-dirichlet boundary conditions cannot be applied
-%             - only coupled overset solver supported currently
+%             - only dirichlet and periodic boundary conditions supported
 %             - only BDF 1 and BDF 2 time solvers supported
 
 %% extract input options
@@ -100,23 +99,23 @@ ndof_per_nd = pp('dof per node'); % number of dofs per node
 
 % build nd to dof map for mesh 1
 coords1 = mesh_obj1{2,1};
-nd_dof_map1 = zeros(size(coords1,1),ndof_per_nd);
+nd_dof_map_orig_1 = zeros(size(coords1,1),ndof_per_nd);
 for ind = 1:size(coords1,1)
-    nd_dof_map1(ind,:) = ((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd);
+    nd_dof_map_orig_1(ind,:) = ((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd);
 end
 
 % build nd to dof map for mesh 2 accounting for dofs in mesh 1
 coords2 = mesh_obj2{2,1};
-nd_dof_map2 = zeros(size(coords2,1),ndof_per_nd);
+nd_dof_map_orig_2 = zeros(size(coords2,1),ndof_per_nd);
 for ind = 1:size(coords2,1)
-    nd_dof_map2(ind,:) = max(nd_dof_map1(:)) + (((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd));
+    nd_dof_map_orig_2(ind,:) = max(nd_dof_map_orig_1(:)) + (((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd));
 end
 
 % extract the free and constrained parts of the system for mesh 1
-[fdof1,fld_dof1,dnd1] = get_dof_status(mesh_obj1,bc1,nd_dof_map1,ov_info,iblank1,lin_sol_info);
+[fdof1,fld_dof1,dnd1,pnd1,nd_dof_map_mod_1] = get_dof_status(mesh_obj1,bc1,nd_dof_map_orig_1,ov_info,iblank1);
 
 % extract the free and constrained parts of the system for mesh 2
-[fdof2,fld_dof2,dnd2] = get_dof_status(mesh_obj2,bc2,nd_dof_map2,ov_info,iblank2,lin_sol_info);
+[fdof2,fld_dof2,dnd2,pnd2,nd_dof_map_mod_2] = get_dof_status(mesh_obj2,bc2,nd_dof_map_orig_2,ov_info,iblank2);
 
 % asemble global array of free dofs 
 glb_fdof = [fdof1; fdof2]; 
@@ -137,7 +136,7 @@ glb_sol_n = [sol1_n; sol2_n];
 glb_sol_nm1 = zeros(size(glb_sol_n,1),1);
     
 if (plot_sol_flag)
-    plot_sol(mesh_obj1, mesh_obj2, glb_sol_n, nd_dof_map1, nd_dof_map2, 0.0);
+    plot_sol(mesh_obj1, mesh_obj2, glb_sol_n, nd_dof_map_orig_1, nd_dof_map_orig_2, 0.0);
 end
 
 %% Time loop
@@ -165,40 +164,47 @@ while curr_time <= tot_time
     end
     
     % apply boundary conditions to mesh 1
-    sol1_np1 = apply_bc(pp,mesh_obj1,dnd1,nd_dof_map1,curr_time);
+    sol1_np1 = apply_dbc(pp,mesh_obj1,dnd1,nd_dof_map_mod_1,curr_time);
 
     % apply boundary conditions to mesh 2
-    sol2_np1 = apply_bc(pp,mesh_obj2,dnd2,nd_dof_map2,curr_time);
+    sol2_np1 = apply_dbc(pp,mesh_obj2,dnd2,nd_dof_map_mod_2,curr_time);
     
     % asemble global solution array at n+1
     glb_sol_np1 = [sol1_np1; sol2_np1];
     
     switch ov_info('solve type')
         case "coupled" % perform strongly coupled linear solve
-            [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_coupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
-                                                                 glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
-                                                                 ov_info,time_info,lin_sol_info,pp);
+            glb_sol_np1 = solver_coupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
+                                         glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map_mod_1,nd_dof_map_mod_2,glb_fdof, ...
+                                         ov_info,time_info,lin_sol_info,pp);
                                                                
         case "decoupled" % perform weakly coupled linear solve
             switch lin_sol_info('type')
                 case "direct"
-                    [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
-                                                                           glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof, ...
-                                                                           ov_info,time_info,lin_sol_info,pp);
+                    glb_sol_np1 = solver_decoupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
+                                                   glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map_mod_1,nd_dof_map_mod_2,glb_fdof, ...
+                                                   ov_info,time_info,lin_sol_info,pp);
                                                                        
                 case "iterative"
-                    [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled_iterative(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
-                                                                                     glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,glb_fdof,glb_fld_dof, ...
-                                                                                     ov_info,time_info,lin_sol_info,pp);
+                    glb_sol_np1 = solver_decoupled_iterative(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
+                                                             glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map_mod_1,nd_dof_map_mod_2,glb_fdof,glb_fld_dof, ...
+                                                             ov_info,time_info,lin_sol_info,pp);
             end
                                                                
         otherwise
             error('Invalid overset solve type');
     end
-                   
+    
+    % copy solution of periodic boundary conditions from master to slave
+    glb_sol_np1 = copy_pbc(ov_info('num grids'),{pnd1,pnd2},{nd_dof_map_orig_1,nd_dof_map_orig_2},glb_sol_np1);
+    
+    % update temporal solution arrays
+    glb_sol_nm1 = glb_sol_n;
+    glb_sol_n   = glb_sol_np1;
+    
     % plot solution
     if (plot_sol_flag)
-        plot_sol(mesh_obj1, mesh_obj2, glb_sol_np1, nd_dof_map1, nd_dof_map2, curr_time);
+        plot_sol(mesh_obj1, mesh_obj2, glb_sol_np1, nd_dof_map_orig_1, nd_dof_map_orig_2, curr_time);
     end 
     
 end

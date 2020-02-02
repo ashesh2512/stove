@@ -1,4 +1,4 @@
-function [test_passed,test_failed] = adv_coup_lag(tol)
+function [test_passed,test_failed] = adv_decoup_lag(tol)
 
 % set counter for passed and failed tests
 test_passed = 0;
@@ -14,14 +14,14 @@ h1   = [ 0.2,  0.2];
 
 % boundary condition map - bottom, right, top, left
 bc1 = containers.Map({   'bottom',      'right',       'top',      'left'}, ...
-                     {"dirichlet",  "dirichlet", "dirichlet", "dirichlet"});
+                     {  "per_mas",  "per_slave", "per_slave",   "per_mas"});
 
 mesh1 = containers.Map({'dim', 'size', 'bc'}, ...
                        { box1,     h1,  bc1});
                    
 %% near body mesh
-box2 = [-1,1; -1,1];
-h2   = [ 0.2,  0.2];
+box2 = [-1.13625,0.86375; -1.13625,0.86375];
+h2   = [             0.2,              0.2];
 
 % boundary condition map - bottom, right, top, left
 bc2 = containers.Map({ 'bottom',   'right',     'top',    'left'}, ...
@@ -51,101 +51,35 @@ mesh2 = containers.Map({'dim', 'size', 'bc'}, ...
 %                    functions. -1 for RBF uses a classical RBF with 0th 
 %                    order consistency.
 ov_info = containers.Map({ 'num grids', 'mesh1 donor', 'mesh2 donor', 'mandatory frng', 'overlap', 'donor grid', 'intrp order', 'solve type','fringe update'}, ...
-                         {  2, 2, 1, 2, [4*0.1, 4*0.1, 4*0.1, 4*0.1], "tensor", 1, "coupled", "direct" });
-
+                         {  2, 2, 1, 2, [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)], "tensor", 1, "decoupled", "direct" });
+                     
 %% time step and linear solve parameters
 dt = min(h2./pp('velocity'));
 
 time_sol_info = containers.Map({'init time', 'total time', 'time step', 'BDF order'}, ...
                              {          0.0,         1.99,          dt,           2} );
 
-lin_sol_info = containers.Map({  'type', 'Newton steps', 'Newton tolerance'}, ...
-                              {"direct",             10,              1e-09} );
+lin_sol_info = containers.Map({  'type', 'Newton steps', 'Newton tolerance', 'decoupled loops', 'solution tolerance'}, ...
+                              {"direct",             10,              1e-09,               100,                 1e-1} );
 
 %% debug/display flags
 debug_flags = containers.Map({'plot mesh', 'plot hole cut', 'print fringe gap', 'plot sol'}, ...
                              {      false,           false,              false,      false});
 
-%% coupled coincident meshes, lagrange interpolation, p1
-
-fprintf('\n');
-fprintf(['Starting test for scalar linear advection equation on coupled coincident meshes ', ...
-         'using lagrange interpolation of order 1 ']);
-fprintf('\n');
-
-%create container map for easy addition and removal of variables without
-%having to change other input files
-inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
-                                {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
-
-L2_err = driver(inp_container);
-gold   = 1.3279249867553922e-01;
-
-% set pass/fail status
-if abs(L2_err - gold) < tol
-    test_status = 'passed'; test_passed = test_passed+1;
-else
-    test_status = 'failed'; test_failed = test_failed+1;
-end
-fprintf('\n');
-fprintf(['Test for advection equation on coupled coincident meshes ', ...
-         'using lagrange interpolation of order 1 ', test_status]);
-fprintf('\n');
-fprintf('\n');
-
-%% coupled meshes, lagrange interpolation, p1
-
-fprintf('\n');
-fprintf(['Starting test for scalar linear advection equation on coupled meshes ', ...
-         'using lagrange interpolation of order 1 ']);
-fprintf('\n');
-
-% near body mesh
-mesh2('dim') = [-1.13625,0.86375; -1.13625,0.86375];
-
-ov_info('overlap') = [3*h2(1), 3*h2(1), 3*h2(1), 3*h2(1)];
-                                        
-%create container map for easy addition and removal of variables without
-%having to change other input files
-inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
-                                {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
-
-L2_err = driver(inp_container);
-gold   = 1.3563407088012361e-01;
-
-% set pass/fail status
-if abs(L2_err - gold) < tol
-    test_status = 'passed'; test_passed = test_passed+1;
-else
-    test_status = 'failed'; test_failed = test_failed+1;
-end
-fprintf('\n');
-fprintf(['Test for advection equation on coupled coincident meshes ', ...
-         'using lagrange interpolation of order 1 ', test_status]);
-fprintf('\n');
-fprintf('\n');
-
 %% coupled meshes with periodic bc, lagrange interpolation, p1
 
 fprintf('\n');
-fprintf(['Starting test for scalar linear advection equation on coupled meshes with periodic bc ', ...
+fprintf(['Starting test for scalar linear advection equation on decoupled meshes with periodic bc ', ...
          'using lagrange interpolation of order 1 ']);
 fprintf('\n');
 
-% boundary condition map - bottom, right, top, left
-bc1 = containers.Map({   'bottom',      'right',       'top',      'left'}, ...
-                     {  "per_mas",  "per_slave", "per_slave",   "per_mas"});
-
-mesh1 = containers.Map({'dim', 'size', 'bc'}, ...
-                       { box1,     h1,  bc1});
-                                        
 %create container map for easy addition and removal of variables without
 %having to change other input files
 inp_container = containers.Map({'problem definition', 'mesh 1', 'mesh 2', 'overset prop', 'time solver prop', 'lin solver prop', 'debug flags'}, ...
                                 {pp, mesh1, mesh2, ov_info, time_sol_info, lin_sol_info, debug_flags} );
 
 L2_err = driver(inp_container);
-gold   = 1.4619375017366851e-01;
+gold   = 1.4619528859468175e-01;
 
 % set pass/fail status
 if abs(L2_err - gold) < tol
@@ -154,7 +88,7 @@ else
     test_status = 'failed'; test_failed = test_failed+1;
 end
 fprintf('\n');
-fprintf(['Test for advection equation on coupled meshes with periodic bc ', ...
+fprintf(['Test for advection equation on decoupled meshes with periodic bc ', ...
          'using lagrange interpolation of order 1 ', test_status]);
 fprintf('\n');
 fprintf('\n');

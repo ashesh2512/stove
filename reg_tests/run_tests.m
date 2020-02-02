@@ -31,6 +31,12 @@ total_fail = total_fail+num_fail;
 total_pass = total_pass+num_pass;
 total_fail = total_fail+num_fail;
 
+%% test advection equation on decoupled meshes using rbf interpolation
+[num_pass,num_fail] = adv_decoup_lag(tol);
+
+total_pass = total_pass+num_pass;
+total_fail = total_fail+num_fail;
+
 %% tally status of all tests
 
 fprintf('\n');
