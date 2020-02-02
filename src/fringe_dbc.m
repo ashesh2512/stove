@@ -1,4 +1,4 @@
-function glb_res = fringe_DBC(glb_res,glb_jac,glb_mesh,glb_donor_map,fulldsol,glb_nd_dof_map,ov_info)
+function glb_res = fringe_dbc(glb_res,glb_jac,glb_mesh,glb_donor_map,fulldsol,glb_nd_dof_map,ov_info)
 % fringe residual contribution during iterative solve
 
 num_grids = ov_info('num grids'); % nmuber of grids
