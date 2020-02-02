@@ -95,19 +95,17 @@ for ig = 1:num_grids
                                                      glb_res,IVEC,JVEC,VVEC,count);
 
      % skip contribution from fringe points for fully decoupled solve
-     if (ov_info('solve type') == "decoupled" && ov_info('fringe update') == "direct")
-         continue
+     if (ov_info('solve type') == "coupled" || ov_info('fringe update') == "iterative")
+         % loop over all fringe nodes for fringe interpolation contribution
+         [glb_res,IVEC,JVEC,VVEC,count] = fringe_contribution(ov_info,donor_map, ...
+                                                              coords,donor_coords,nd_dof_map,donor_nd_dof_map, ...
+                                                              glb_sol_np1, ...
+                                                              glb_res,IVEC,JVEC,VVEC,count,false);
      end
-     
-    % loop over all fringe nodes for fringe interpolation contribution
-    [glb_res,IVEC,JVEC,VVEC,count] = fringe_contribution(ov_info,donor_map, ...
-                                                         coords,donor_coords,nd_dof_map,donor_nd_dof_map, ...
-                                                         glb_sol_np1, ...
-                                                         glb_res,IVEC,JVEC,VVEC,count,false);
     
 end
 
 % create sparse matrix out of IVEC,JVEC,VVEC
 glb_jac = sparse(IVEC,JVEC,VVEC,tot_dofs,tot_dofs);
-
+ 
 end

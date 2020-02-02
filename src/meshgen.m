@@ -1,6 +1,6 @@
 function mesh_obj = meshgen(box, h)
 % structured mesh generator for vertex-centered finite volume. Ordering
-% follows a counter-clockwise pattern beginnin from bottom-left most point
+% follows a left to right, bottom to top pattern.
 %
 % Input:  box  - coordinates of mesh extrema
 %         h    - element size of mesh
