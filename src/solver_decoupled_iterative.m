@@ -106,7 +106,7 @@ while (exch_it < max_exch_it)
     dsol_prev = free_dsol; % update previous dsol array
     
     % determine RHS correction at fringe points for all meshes
-    RHS_adj = fringe_DBC(RHS, JAC_MAT, {mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, ...
+    RHS_adj = fringe_dbc(RHS, JAC_MAT, {mesh_obj1,mesh_obj2}, {donor_map1,donor_map2}, ...
                          fulldsol, {nd_dof_map1,nd_dof_map2}, ov_info);
     free_RES = RHS_adj(glb_fdof);
     
