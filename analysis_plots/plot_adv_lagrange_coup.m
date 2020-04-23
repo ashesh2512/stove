@@ -71,15 +71,45 @@ set(gca, 'FontSize', 18);
 del    = 0.2;
 h      = [del del/2 del/4 del/8];
 L2     = [1.3563407088012361e-01, 3.7807655933261207e-02, 9.9860649996785372e-03, 2.6282128810528730e-03];
+
 y_vals = 25*h.^2;
 
 figure(2)
 clf
 hold on
 plot(h,y_vals,  '-k','LineWidth', 2);
-plot(h,L2,'--*r','LineWidth', 2);
+plot(h,L2,'--*r','LineWidth', 2,'MarkerSize',20);
 set(gca, 'XScale', 'log', 'YScale', 'log');
-xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
+xlabel('$h$','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
 legend('slope=2', 'linear Lagrange', 'Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
+
+%% periodic bc with non-constant fringe gap
+
+% % boundary condition map - bottom, right, top, left
+% bc1 = containers.Map({   'bottom',      'right',       'top',      'left'}, ...
+%                      {  "per_mas",  "per_slave", "per_slave",   "per_mas"});
+
+del    = 0.2;
+h      = [del del/2 del/4 del/8];
+L2     = [1.4619375017366851e-01, 3.9809634740986186e-02, 1.0413186214473841e-02, 2.7245658567234335e-03];
+
+y_vals = 25*h.^2;
+
+figure(3)
+clf
+hold on
+plot(h,y_vals,  '-k','LineWidth', 2);
+plot(h,L2,'--*r','LineWidth', 2,'MarkerSize',20);
+set(gca, 'XScale', 'log', 'YScale', 'log');
+xlabel('$h$','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
+legend('slope=2', 'linear Lagrange', 'Interpreter','latex');
+set(gcf,'color','w');
+set(gca, 'FontSize', 20);
+
+% fig = figure(3);
+% set(fig,'Units','Inches');
+% pos = get(fig,'Position');
+% set(fig,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+% print(fig,'temp_name','-dpdf','-r0')

@@ -35,11 +35,11 @@ y_vals = 15*h.^2;
 figure(1)
 clf
 hold on
-plot(h,L2,'--*r','LineWidth', 2);
 plot(h,y_vals,  '-k','LineWidth', 2);
+plot(h,L2,'--*r','LineWidth', 2,'MarkerSize',20);
 set(gca, 'XScale', 'log', 'YScale', 'log');
-xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
-title('coincident meshes','Interpreter','latex');
+xlabel('$h$','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
+% title('coincident meshes','Interpreter','latex');
 legend('slope=2', 'single mesh', 'Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
@@ -70,11 +70,11 @@ clf
 hold on
 plot(h,y_vals1,'-m','LineWidth', 2);
 plot(h,y_vals2,'-k','LineWidth', 2);
-plot(h,L2_p1,'--*r','LineWidth', 2);
-plot(h,L2_p2,'--*g','LineWidth', 2);
-plot(h,L2_p3,'--*b','LineWidth', 2);
+plot(h,L2_p1,'--sr','LineWidth', 2,'MarkerSize',20);
+plot(h,L2_p2,'--^g','LineWidth', 2,'MarkerSize',20);
+plot(h,L2_p3,'--ob','LineWidth', 2,'MarkerSize',20);
 set(gca, 'XScale', 'log', 'YScale', 'log');
-xlabel('h','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
+xlabel('$h$','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
 legend('slope=1', 'slope=2', 'linear Lagrange', 'quadratic Lagrange', 'cubic Lagrange', 'Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
@@ -89,30 +89,36 @@ clf
 subplot(2,2,1)
 plot(h, gap(:,1),'--*r','LineWidth', 2)
 xlabel('h','Interpreter','latex'); ylabel('fringe gap','Interpreter','latex');
-title('bottom','Interpreter','latex');
+title('bottom boundary','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 16);
 
 subplot(2,2,2)
 plot(h, gap(:,2),'--*r','LineWidth', 2)
 xlabel('h','Interpreter','latex'); ylabel('fringe gap','Interpreter','latex');
-title('right','Interpreter','latex');
+title('right boundary','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 16);
 
 subplot(2,2,3)
 plot(h, gap(:,3),'--*r','LineWidth', 2)
 xlabel('h','Interpreter','latex'); ylabel('fringe gap','Interpreter','latex');
-title('top','Interpreter','latex');
+title('top boundary','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 16);
 
 subplot(2,2,4)
 plot(h, gap(:,4),'--*r','LineWidth', 2)
 xlabel('h','Interpreter','latex'); ylabel('fringe gap','Interpreter','latex');
-title('left','Interpreter','latex');
+title('left boundary','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 16);
+
+fig = figure(2);
+set(fig,'Units','Inches');
+pos = get(fig,'Position');
+set(fig,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+print(fig,'temp_name','-dpdf','-r0')
 
 %% problem properties               
 % near body mesh 2 fringe gap: bottom: 7.362500e-01, right: 6.637500e-01, top: 6.637500e-01, left:7.362500e-01 
@@ -139,10 +145,10 @@ figure(4)
 clf
 hold on
 plot(h,y_vals2,'-k','LineWidth', 2);
-plot(h,L2_p1,'--*r','LineWidth', 2);
+plot(h,L2_p1,'--*r','LineWidth', 2,'MarkerSize',20);
 set(gca, 'XScale', 'log', 'YScale', 'log');
-xlabel('h','FontSize',18,'Interpreter','latex'); ylabel('$L_2$','FontSize',18,'Interpreter','latex');
+xlabel('$h$','FontSize',18,'Interpreter','latex'); ylabel('$L_2$','FontSize',18,'Interpreter','latex');
 legend('slope=2', 'linear Lagrange', 'Interpreter','latex');
-title('constant overlap','Interpreter','latex');
+% title('constant overlap','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);

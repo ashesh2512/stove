@@ -22,8 +22,8 @@ plot3(coords1(ib1==-1,1),coords1(ib1==-1,2),ib1(ib1==-1),'.','Color',[0, 0.5, 0]
 surf(coord_x_2,coord_y_2,surf2,'edgecolor','red');
 plot3(coords2(ib2==-1,1),coords2(ib2==-1,2),ib2(ib2==-1),'.b','markersize',25);
 alpha(0.0);
-title('Fringe points, both meshes','Interpreter','latex');
-colorbar;
+% title('Fringe points, both meshes','Interpreter','latex');
+% colorbar;
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
 view(2);
@@ -35,8 +35,8 @@ plot3(coords1(ib1==-1,1),coords1(ib1==-1,2),ib1(ib1==-1),'.','Color',[0, 0.5, 0]
 surf(coord_x_2,coord_y_2,surf2,'edgecolor','red');
 plot3(coords2(don2,1),coords2(don2,2),ib2(don2),'.m','markersize',25);
 alpha(0.0);
-title('Mesh 1 fringe with mesh 2 donor','Interpreter','latex');
-colorbar;
+% title('Mesh 1 fringe with mesh 2 donor','Interpreter','latex');
+% colorbar;
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
 view(2);
@@ -44,12 +44,12 @@ view(2);
 subplot(1,3,3)
 hold on
 surf(coord_x_1,coord_y_1,surf1,'edgecolor','black');
-plot3(coords1(don1,1),coords1(don1,2),ib1(don1),'.','Color',[0.75, 0.75, 0],'markersize',25);
+plot3(coords1(don1,1),coords1(don1,2),ib1(don1),'.','color', [0.710000 0.400000 0.110000],'markersize',25);
 surf(coord_x_2,coord_y_2,surf2,'edgecolor','red');
 plot3(coords2(ib2==-1,1),coords2(ib2==-1,2),ib2(ib2==-1),'.b','markersize',25);
 alpha(0.0);
-title('Mesh 2 fringe with mesh 1 donor','Interpreter','latex');
-colorbar;
+% title('Mesh 2 fringe with mesh 1 donor','Interpreter','latex');
+% colorbar;
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
 view(2);

@@ -84,7 +84,7 @@ plot3([25 25 25 25],h,1.1*y_vals,'-k','LineWidth', 2);
 plot3([40 40 40 40],h,1.1*y_vals,'-k','LineWidth', 2);
 grid on;
 set(gca, 'YScale', 'log', 'ZScale', 'log');
-xlabel('decoupled iterations','Interpreter','latex'); ylabel('h','Interpreter','latex'); zlabel('$L_2$','Interpreter','latex');
+xlabel('decoupled iterations','Interpreter','latex'); ylabel('$h$','Interpreter','latex'); zlabel('$L_2$','Interpreter','latex');
 legend([h1(1),h2(1),h3(1),h4(1),h5(1)], 'h = 0.2','h = 0.1','h = 0.05','h = 0.025','slope=2','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 18);
