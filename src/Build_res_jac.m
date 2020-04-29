@@ -25,18 +25,20 @@ for ig = 1:num_grids
     
     num_dofs(ig) = ndof_nd*size(coords,1); % number of dofs on this mesh
     
+    iblank = glb_iblank{ig}; % iblank array for current grid
+    fringe_count = sum(iblank(:,:)==-1);
     donor_map = glb_donor_map{ig}; % donor map array for current grid
     
     % determine size for compressed sparse column format vector
     vec_size = vec_size ...
              + jac_srf_size*(size(edge_topo_x,1) + size(edge_topo_y,1)) ...
-             + ndof_nd*(size(coords,1) - size(donor_map,1));
+             + ndof_nd*(size(coords,1) - fringe_count);
     
     % account for fringe contributions if this is a decoupled solve
     if (ov_info('solve type') == "coupled")
-        vec_size = vec_size + ndof_nd*(sum(cellfun('length',donor_map(:,2))) + size(donor_map,1));
-    elseif (ov_info('solve type') == "decoupled iterative")
-        vec_size = vec_size + ndof_nd*size(donor_map,1);
+        vec_size = vec_size + ndof_nd*(sum(cellfun('length',donor_map(:,2))) + fringe_count);
+    elseif (ov_info('solve type') == "decoupled" && ov_info('fringe update') == "iterative")
+        vec_size = vec_size + ndof_nd*fringe_count;
     end
     
 end

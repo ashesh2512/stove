@@ -65,6 +65,9 @@ plot_sol_flag      = debug_flags('plot sol');
 mesh_obj1 = meshgen(box1, h1);
 mesh_obj2 = meshgen(box2, h2);
 
+mesh_obj1_cell = meshgen_cell(box1, h1);
+mesh_obj2_cell = meshgen_cell(box2, h2);
+
 if (plot_mesh_flag)
     plot_mesh(mesh_obj1, mesh_obj2);
 end
@@ -81,15 +84,37 @@ end
 iblank1 = nb_iblank1; iblank1(bg_iblank2==-1) = -1;
 iblank2 = bg_iblank1; iblank2(nb_iblank2==-1) = -1;
 
-% determine nodal donor maps for each mesh
-[donor_map1, don_nds2] = map_donors(mesh_obj1, mesh_obj2, iblank1, iblank2, ov_info);
-[donor_map2, don_nds1] = map_donors(mesh_obj2, mesh_obj1, iblank2, iblank1, ov_info);
+% get cell iblanks
+iblank_cell1 = get_iblank_cell(mesh_obj1,iblank1);
+iblank_cell2 = get_iblank_cell(mesh_obj2,iblank2);
 
-if (plot_hole_cut_flag)
-    plot_hole_cut(mesh_obj1, mesh_obj2, iblank1, iblank2, don_nds1, don_nds2);
+% determine donor maps for each mesh
+if (ov_info('fringe node averaging'))
+    if(ov_info('background grid') == 1)
+        [donor_map1, don_pts2] = map_donors(mesh_obj1_cell, mesh_obj2, iblank_cell1, iblank2, ov_info);
+        [donor_map2, don_pts1] = map_donors(mesh_obj2, mesh_obj1_cell, iblank2, iblank_cell1, ov_info);
+    else
+        [donor_map1, don_pts2] = map_donors(mesh_obj1, mesh_obj2_cell, iblank1, iblank_cell2, ov_info);
+        [donor_map2, don_pts1] = map_donors(mesh_obj2_cell, mesh_obj1, iblank_cell2, iblank1, ov_info);
+    end
+else
+    [donor_map1, don_pts2] = map_donors(mesh_obj1, mesh_obj2, iblank1, iblank2, ov_info);
+    [donor_map2, don_pts1] = map_donors(mesh_obj2, mesh_obj1, iblank2, iblank1, ov_info);
 end
 
-if (print_frng_dist)
+if (plot_hole_cut_flag)
+    if (ov_info('fringe node averaging'))
+        if(ov_info('background grid') == 1)
+            plot_hole_cut(mesh_obj2, mesh_obj1_cell, iblank2, iblank_cell1, don_pts2, don_pts1);
+        else
+            plot_hole_cut(mesh_obj1, mesh_obj2_cell, iblank1, iblank_cell2, don_pts1, don_pts2);
+        end
+    else
+        plot_hole_cut(mesh_obj1, mesh_obj2, iblank1, iblank2, don_pts1, don_pts2);
+    end
+end
+
+if (print_frng_dist) % plotted only for the nodal donors
     compute_frng_gap(mesh_obj1,mesh_obj2,nb_iblank1,bg_iblank1,nb_iblank2,bg_iblank2);
 end
 
@@ -109,6 +134,22 @@ coords2 = mesh_obj2{2,1};
 nd_dof_map_orig_2 = zeros(size(coords2,1),ndof_per_nd);
 for ind = 1:size(coords2,1)
     nd_dof_map_orig_2(ind,:) = max(nd_dof_map_orig_1(:)) + (((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd));
+end
+
+% build cell to dof map for mesh 1
+cells_x1 = size(unique(coords1(:,1)),1)-1;
+cells_y1 = size(unique(coords1(:,2)),1)-1;
+cell_dof_map_1 = zeros(cells_x1*cells_y1,ndof_per_nd);
+for ind = 1:size(cell_dof_map_1,1)
+    cell_dof_map_1(ind,:) = ((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd);
+end
+
+% build cell to dof map for mesh 2 accounting for dofs in mesh 1
+cells_x2 = size(unique(coords2(:,1)),1)-1;
+cells_y2 = size(unique(coords2(:,2)),1)-1;
+cell_dof_map_2 = zeros(cells_x2*cells_y2,ndof_per_nd);
+for ind = 1:size(cell_dof_map_2,1)
+    cell_dof_map_2(ind,:) = max(cell_dof_map_1(:)) + (((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd));
 end
 
 % extract the free and constrained parts of the system for mesh 1
@@ -181,8 +222,9 @@ while curr_time <= tot_time
         case "decoupled" % perform weakly coupled linear solve
             switch lin_sol_info('type')
                 case "direct"
-                    glb_sol_np1 = solver_decoupled(mesh_obj1,mesh_obj2,donor_map1,donor_map2,iblank1,iblank2, ...
-                                                   glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map_mod_1,nd_dof_map_mod_2,glb_fdof, ...
+                    glb_sol_np1 = solver_decoupled(mesh_obj1,mesh_obj2,mesh_obj1_cell,mesh_obj2_cell, ...
+                                                   donor_map1,donor_map2,iblank1,iblank2,iblank_cell1,iblank_cell2, ...
+                                                   glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map_mod_1,nd_dof_map_mod_2,cell_dof_map_1,cell_dof_map_2,glb_fdof, ...
                                                    ov_info,time_info,lin_sol_info,pp);
                                                                        
                 case "iterative"
@@ -211,7 +253,7 @@ end
 
 %% compute L2 error
 
-L2_err = comp_L2_err(pp,glb_sol_np1,mesh_obj1,mesh_obj2,curr_time);
+% L2_err = comp_L2_err(pp,glb_sol_np1,mesh_obj1,mesh_obj2,curr_time);
 
 end
 
