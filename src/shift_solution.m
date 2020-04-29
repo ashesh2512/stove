@@ -1,6 +1,6 @@
-function sol_out = shift_solution(mesh,ib,sol_in_nd,sol_in_cell,nd_dof_map,cell_dof_map,averaging,ov_info)
+function sol_out = shift_solution(mesh_def,ib,sol_in_nd,sol_in_cell,nd_dof_map,cell_dof_map,averaging,ov_info)
 
-num_grids = length(mesh); % nmuber of grids
+num_grids = length(mesh_def); % nmuber of grids
 ndof = size(nd_dof_map{1},2); % number of dofs per node/cell
 
 for ig = 1:num_grids
@@ -10,9 +10,12 @@ for ig = 1:num_grids
     end
     
     % get number of cells
-    coords = mesh{ig}{2,1};
-    cells_x = size(unique(coords(:,1)),1)-1;
-    cells_y = size(unique(coords(:,2)),1)-1;
+    box = mesh_def{ig}('dim');
+    h   = mesh_def{ig}('size');
+    omega_x = box(1,2) - box(1,1);
+    omega_y = box(2,2) - box(2,1);
+    cells_x = floor(omega_x/h(1));
+    cells_y = floor(omega_y/h(2));
     
     switch averaging
         case "cell" % node to cell averaging

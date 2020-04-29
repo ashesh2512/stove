@@ -16,16 +16,16 @@ function L2_err = driver(inp_container)
 pp = inp_container('problem definition');
                  
 % extract mesh 1 details
-mesh1 = inp_container('mesh 1');
-box1  = mesh1('dim');
-h1    = mesh1('size');
-bc1   = mesh1('bc');
+mesh_def1 = inp_container('mesh 1');
+box1      = mesh_def1('dim');
+h1        = mesh_def1('size');
+bc1       = mesh_def1('bc');
 
 % extract mesh 2 details
-mesh2 = inp_container('mesh 2');
-box2  = mesh2('dim');
-h2    = mesh2('size');
-bc2   = mesh2('bc');
+mesh_def2 = inp_container('mesh 2');
+box2      = mesh_def2('dim');
+h2        = mesh_def2('size');
+bc2       = mesh_def2('bc');
                    
 % extract overset properties
 ov_info = inp_container('overset prop');
@@ -85,8 +85,8 @@ iblank1 = nb_iblank1; iblank1(bg_iblank2==-1) = -1;
 iblank2 = bg_iblank1; iblank2(nb_iblank2==-1) = -1;
 
 % get cell iblanks
-iblank_cell1 = get_iblank_cell(mesh_obj1,iblank1);
-iblank_cell2 = get_iblank_cell(mesh_obj2,iblank2);
+iblank_cell1 = get_iblank_cell(mesh_def1,iblank1);
+iblank_cell2 = get_iblank_cell(mesh_def2,iblank2);
 
 % determine donor maps for each mesh
 if (ov_info('fringe node averaging'))
@@ -137,16 +137,20 @@ for ind = 1:size(coords2,1)
 end
 
 % build cell to dof map for mesh 1
-cells_x1 = size(unique(coords1(:,1)),1)-1;
-cells_y1 = size(unique(coords1(:,2)),1)-1;
+omega_x1 = box1(1,2) - box1(1,1);
+omega_y1 = box1(2,2) - box1(2,1);
+cells_x1 = floor(omega_x1/h1(1));
+cells_y1 = floor(omega_y1/h1(2));
 cell_dof_map_1 = zeros(cells_x1*cells_y1,ndof_per_nd);
 for ind = 1:size(cell_dof_map_1,1)
     cell_dof_map_1(ind,:) = ((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd);
 end
 
 % build cell to dof map for mesh 2 accounting for dofs in mesh 1
-cells_x2 = size(unique(coords2(:,1)),1)-1;
-cells_y2 = size(unique(coords2(:,2)),1)-1;
+omega_x2 = box2(1,2) - box2(1,1);
+omega_y2 = box2(2,2) - box2(2,1);
+cells_x2 = floor(omega_x2/h2(1));
+cells_y2 = floor(omega_y2/h2(2));
 cell_dof_map_2 = zeros(cells_x2*cells_y2,ndof_per_nd);
 for ind = 1:size(cell_dof_map_2,1)
     cell_dof_map_2(ind,:) = max(cell_dof_map_1(:)) + (((ind-1)*ndof_per_nd+1):(ind*ndof_per_nd));
@@ -222,7 +226,7 @@ while curr_time <= tot_time
         case "decoupled" % perform weakly coupled linear solve
             switch lin_sol_info('type')
                 case "direct"
-                    glb_sol_np1 = solver_decoupled(mesh_obj1,mesh_obj2,mesh_obj1_cell,mesh_obj2_cell, ...
+                    glb_sol_np1 = solver_decoupled(mesh_def1,mesh_def2,mesh_obj1,mesh_obj2,mesh_obj1_cell,mesh_obj2_cell, ...
                                                    donor_map1,donor_map2,iblank1,iblank2,iblank_cell1,iblank_cell2, ...
                                                    glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map_mod_1,nd_dof_map_mod_2,cell_dof_map_1,cell_dof_map_2,glb_fdof, ...
                                                    ov_info,time_info,lin_sol_info,pp);

@@ -1,4 +1,4 @@
-function [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_obj1,mesh_obj2,mesh_obj1_cell,mesh_obj2_cell, ...
+function [glb_sol_np1,glb_sol_n,glb_sol_nm1] = solver_decoupled(mesh_def1,mesh_def2,mesh_obj1,mesh_obj2,mesh_obj1_cell,mesh_obj2_cell, ...
                                                                 donor_map1,donor_map2,iblank1,iblank2,iblank_cell1,iblank_cell2, ...
                                                                 glb_sol_np1,glb_sol_n,glb_sol_nm1,nd_dof_map1,nd_dof_map2,cell_dof_map1,cell_dof_map2,glb_fdof, ...
                                                                 ov_info,time_info,lin_sol_info,pp)
@@ -60,7 +60,7 @@ for io = 1:O_iters
 %         plot_sol(mesh_obj1,mesh_obj2,glb_sol_np1,nd_dof_map1,nd_dof_map2,0.0);
         
         glb_sol_np1_cell = zeros(max([cell_dof_map1;cell_dof_map2],[],'all'),1);
-        glb_sol_np1_cell = shift_solution({mesh_obj1,mesh_obj2},{iblank1,iblank2},glb_sol_np1,glb_sol_np1_cell, ...
+        glb_sol_np1_cell = shift_solution({mesh_def1,mesh_def2},{iblank1,iblank2},glb_sol_np1,glb_sol_np1_cell, ...
                                           {nd_dof_map1,nd_dof_map2},{cell_dof_map1,cell_dof_map2},"cell",ov_info);
 %         plot_sol_cell(mesh_obj1,glb_sol_np1_cell,cell_dof_map1,0.0);
         
@@ -73,7 +73,7 @@ for io = 1:O_iters
             glb_sol_np1 = fringe_interpolation_mixed(mesh_obj1,mesh_obj2_cell,donor_map1,glb_sol_np1,glb_sol_np1_cell,nd_dof_map1,cell_dof_map2,ov_info);
         end
 
-        glb_sol_np1 = shift_solution({mesh_obj1,mesh_obj2},{iblank1,iblank2},glb_sol_np1,glb_sol_np1_cell, ...
+        glb_sol_np1 = shift_solution({mesh_def1,mesh_def2},{iblank1,iblank2},glb_sol_np1,glb_sol_np1_cell, ...
                                      {nd_dof_map1,nd_dof_map2},{cell_dof_map1,cell_dof_map2},"node",ov_info);
 %         plot_sol(mesh_obj1,mesh_obj2,glb_sol_np1,nd_dof_map1,nd_dof_map2,0.0);
 
@@ -91,6 +91,8 @@ for io = 1:O_iters
     if (L2_diff < sol_tol) % check if glb_sol_np1 is still changing
         break;
     end
+
+    save('L2_err','L2_err');
 
 end
 
