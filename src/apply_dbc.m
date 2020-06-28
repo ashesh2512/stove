@@ -25,11 +25,11 @@ switch pp('prblm')
                                      +cos( 2*pi*coords(dnd,2) ));
 
     case "unsteady scalar adv" % sin(pi*X - vel*time) + sin(pi*Y - vel*time)
-        
-        % add logic to skip this if periodic boundary conditions exist
-        
+                
         vel  = pp('velocity');  % extract constant velocity
         
+        % If dnd is empty, which is the case for pnd, solution array
+        % continues to be consistent
         sol(nd_dof_map(dnd)) = sin(pi*coords(dnd,1) - vel(1)*time) ...
                              + sin(pi*coords(dnd,2) - vel(2)*time);
         
