@@ -20,7 +20,7 @@ switch pp('prblm')
         x = coord(1);
         y = coord(2);
         
-        res_vol(1) = res_vol + cond*(pi^2)*(cos(2.0*pi*x) + cos(2.0*pi*y))*nd_vol;
+        res_vol(1) = res_vol - cond*(pi^2)*(cos(2.0*pi*x) + cos(2.0*pi*y))*nd_vol;
         
     case "unsteady scalar adv" % unsteady scalar advection with constant velocity
                 
