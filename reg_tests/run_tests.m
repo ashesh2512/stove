@@ -25,13 +25,19 @@ total_fail = total_fail+num_fail;
 total_pass = total_pass+num_pass;
 total_fail = total_fail+num_fail;
 
-%% test advection equation on coupled meshes using rbf interpolation
+%% test advection equation on coupled meshes using lagrange interpolation
 [num_pass,num_fail] = adv_coup_lag(tol);
 
 total_pass = total_pass+num_pass;
 total_fail = total_fail+num_fail;
 
-%% test advection equation on decoupled meshes using rbf interpolation
+%% test advection equation on coupled meshes using rbf interpolation
+[num_pass,num_fail] = adv_coup_rbf(tol);
+
+total_pass = total_pass+num_pass;
+total_fail = total_fail+num_fail;
+
+%% test advection equation on decoupled meshes using lagrange interpolation
 [num_pass,num_fail] = adv_decoup_lag(tol);
 
 total_pass = total_pass+num_pass;
