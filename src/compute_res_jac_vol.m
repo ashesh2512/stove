@@ -27,6 +27,12 @@ switch pp('prblm')
         res_vol(1) = res_vol(1) + pi*(g_np1*sol_np1(1) + g_n*sol_n(1) + g_nm1*sol_nm1(1))*nd_vol/dt;
 
         jac_vol(1,1) = jac_vol(1,1) + pi*g_np1*nd_vol/dt;
+        
+    case "unsteady adv diff" % unsteady scalar advection with constant velocity
+                
+        res_vol(1) = res_vol(1) + (g_np1*sol_np1(1) + g_n*sol_n(1) + g_nm1*sol_nm1(1))*nd_vol/dt;
+
+        jac_vol(1,1) = jac_vol(1,1) + g_np1*nd_vol/dt;
 
     otherwise
         error('Do not recognize the problem id');

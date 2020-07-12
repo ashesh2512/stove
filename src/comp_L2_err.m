@@ -22,11 +22,25 @@ switch pp('prblm')
         L2_err(1) = sqrt( sum((sol - sol_anlyt).^2) / numpts );
         
     case "unsteady scalar adv" % sin(freq*X - vel*time) + sin(freq*Y - vel*time);
+        % analytical solution is different than for "unsteady adv diff"
+        % because the inertial term is different - FIXME
 
         vel = pp('velocity');
 
         sol_anlyt = sin(pi*coords(:,1) - vel(1)*time) ...
                   + sin(pi*coords(:,2) - vel(2)*time);
+        
+        L2_err(1) = sqrt( sum((sol - sol_anlyt).^2) / numpts );
+        
+    case "unsteady adv diff"
+        
+        cond = pp('conductivity'); % extract conductivity
+        vel  = pp('velocity');  % extract constant velocity
+        avg  = pp('mean'); % extr
+        
+        sol_anlyt = exp(-cond*(pi^2)*time)...
+            *(sin(pi*(coords(:,1)-vel(1)*time)) + sin(pi*(coords(:,2)-vel(2)*time)))...
+            + avg;
         
         L2_err(1) = sqrt( sum((sol - sol_anlyt).^2) / numpts );
         

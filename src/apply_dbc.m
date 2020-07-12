@@ -32,6 +32,11 @@ switch pp('prblm')
         % continues to be consistent
         sol(nd_dof_map(dnd)) = sin(pi*coords(dnd,1) - vel(1)*time) ...
                              + sin(pi*coords(dnd,2) - vel(2)*time);
+                         
+    case "unsteady adv diff"
+        if(~isempty(dnd))
+            error('Dirichlet BC not setup for unsteady advection diffusion case');
+        end
         
     otherwise
         error('Do not recognize the problem; check problem parameters in driver');

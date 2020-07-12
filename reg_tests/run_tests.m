@@ -43,6 +43,12 @@ total_fail = total_fail+num_fail;
 total_pass = total_pass+num_pass;
 total_fail = total_fail+num_fail;
 
+%% test advection diffusion equation on decoupled meshes using lagrange interpolation
+[num_pass,num_fail] = adv_diff_coup(tol);
+
+total_pass = total_pass+num_pass;
+total_fail = total_fail+num_fail;
+
 %% tally status of all tests
 
 fprintf('\n');

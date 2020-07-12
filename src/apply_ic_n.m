@@ -25,6 +25,16 @@ switch pp('prblm')
         
         sol = sin(pi*coords(:,1) - vel(1)*init_time) + sin(pi*coords(:,2) - vel(2)*init_time);
         
+    case "unsteady adv diff"
+        
+        cond = pp('conductivity'); % extract conductivity
+        vel  = pp('velocity');  % extract constant velocity
+        avg  = pp('mean'); % extr
+        
+        sol = exp(-cond*(pi^2)*init_time)...
+            *(sin(pi*(coords(:,1)-vel(1)*init_time)) + sin(pi*(coords(:,2)-vel(2)*init_time)))...
+            + avg;
+        
     otherwise
         error('Do not recognize the problem; check problem parameters in driver');
 end
