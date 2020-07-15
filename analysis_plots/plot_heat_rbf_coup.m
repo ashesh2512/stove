@@ -53,11 +53,12 @@ legend('slope=1', 'slope=2', 'RBF($C^1$)', 'RBF($C^2$)', 'RBF($C^3$)', 'Interpre
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
 
-p1 = [0.01, 0.032, 0.143, 0.63];
-p2 = [0.01, 0.033, 0.171, 0.76];
-p3 = [0.011,0.039, 0.205, 0.95];
-c2 = [0.02,  0.21, 1.178, 5.38];
-c3 = [0.027, 0.27, 1.250, 5.47];
+
+p1 = [0.02, 0.045, 0.168, 0.694];
+p2 = [0.02, 0.054, 0.211, 0.841];
+p3 = [0.024, 0.066, 0.26, 1.075];
+c2 = [0.108, 0.325, 1.4, 5.839];
+c3 = [0.11, 0.3385, 1.4465, 5.9045];
 
 figure(2)
 clf
@@ -126,17 +127,21 @@ set(gca, 'FontSize', 24);
 nnodes = [18,37,64,92,130,176,222,280,340,416,488,565,652,746,854,956,1070,1188,1313,1450,1580,1734,1886,2040,2200];
 time   = [0.012,0.014,0.015,0.016,0.019,0.023,0.026,0.033,0.041,0.049,0.06,0.07,0.085,0.1,0.13,0.16,0.2,0.24,0.27,0.33,0.38,0.47,0.54,0.64,0.76];
 
+poly = polyfit(nnodes,time./time(1),2);
+y_poly = polyval(poly,nnodes);
+
 figure(4)
 clf
 hold on
 plot(nnodes, time/time(1),'--b','LineWidth', 2, 'MarkerSize', 20);
+plot(nnodes, y_poly,'--*r','LineWidth', 2, 'MarkerSize', 10);
 xlabel('number of donor nodes','Interpreter','latex'); ylabel('Normalized wall time','Interpreter','latex');
 % title('RBF($C^2$)','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
 
-fig = figure(1);
-set(fig,'Units','Inches');
-pos = get(fig,'Position');
-set(fig,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
-print(fig,'temp_name','-dpdf','-r0')
+% fig = figure(1);
+% set(fig,'Units','Inches');
+% pos = get(fig,'Position');
+% set(fig,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+% print(fig,'temp_name','-dpdf','-r0')
