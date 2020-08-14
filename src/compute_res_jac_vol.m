@@ -13,6 +13,9 @@ g_nm1 = time_info('gamma_nm1');
 dt    = time_info('time step');
 
 switch pp('prblm')
+    case "Laplace"
+        return;
+        
     case "steady heat MMS" % steady heat conduction using an MMS: q^dot = k*pi^2*(cos(2*\pi*x) + cos(2*\pi*y))
         
         cond = pp('conductivity'); % conductivity

@@ -16,7 +16,7 @@ sol = zeros(size(coords,1)*ndof_nd,1);
 
 % apply bc based on problem
 switch pp('prblm')
-    case "steady heat MMS"
+    case {"steady heat MMS","Laplace"}
         return;
         
     case "unsteady scalar adv" % sin(pi*X - vel*time) + sin(pi*Y - vel*time)

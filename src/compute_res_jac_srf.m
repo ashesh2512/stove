@@ -2,7 +2,7 @@ function [res, jac] = compute_res_jac_srf(sol, edge_coord, edge_area, edge_nrml,
 % This function evaluates the scs contribution to the nodal residual and jacobian.
 
 switch pp('prblm')
-    case "steady heat MMS" % steady heat conduction
+    case {"steady heat MMS","Laplace"} % steady heat conduction
         
         [res,jac] = res_jac_diff_srf(sol, edge_coord, edge_area, pp);
         

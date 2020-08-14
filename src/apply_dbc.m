@@ -17,6 +17,9 @@ sol = zeros(size(coords,1)*ndof_nd,1);
 
 % apply bc based on problem
 switch pp('prblm')
+    case "Laplace"
+        sol(nd_dof_map(dnd)) = sin(coords(dnd,1)).*sinh(coords(dnd,2));
+        
     case "steady heat MMS" % steady heat conduction using an MMS: T = 1/4*( cos(2*\pi*x) + cos(2*\pi*y) )
         
         cond = pp('conductivity'); % extract conductivity

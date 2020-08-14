@@ -13,6 +13,12 @@ coords  = [coords1;coords2];
 numpts  = size(coords,1);
 
 switch pp('prblm')
+    case "Laplace"
+        
+        sol_anlyt = sin(coords(:,1)).*sinh(coords(:,2));
+        
+        L2_err(1) = sqrt( sum((sol - sol_anlyt).^2) / numpts );
+        
     case "steady heat MMS" % steady heat conduction using an MMS: T = k/4(cos(2*\pi*x) + cos(2*\pi*y))
         
         cond = pp('conductivity');
