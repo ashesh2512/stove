@@ -79,6 +79,32 @@ S_a = eye(num_intrp_coeff)/R_Q - P_mT_R_Q_inv'*S_b;
 
 coeff = (R'*S_a + p'*S_b)'; % evaluate radial basis coefficient array
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%% Jay's implementation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% M = zeros(num_intrp_coeff+num_poly_coeff);
+% B = zeros(num_intrp_coeff+num_poly_coeff,1);
+% 
+% for i = 1:num_intrp_coeff
+%     
+%     for j = 1:num_intrp_coeff  
+%         dd = dot(supp_coords(i,:)-supp_coords(j,:),supp_coords(i,:)-supp_coords(j,:));
+%         M(i,j) = exp(-dd);    
+%     end
+%     M(i,num_intrp_coeff+1:end) = assemble_poly_coeff(supp_coords(i,:),num_poly_coeff);
+%     M(num_intrp_coeff+1:end,i) = M(i,num_intrp_coeff+1:end);
+%     
+%     dd = dot(frng_coords-supp_coords(i,:),frng_coords-supp_coords(i,:));
+%     B(i) = exp(-dd); 
+% end
+% 
+% B(num_intrp_coeff+1:end) = assemble_poly_coeff(frng_coords,num_poly_coeff);
+% 
+% coeff_test = M\B;
+% coeff = coeff_test(1:num_intrp_coeff);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 end
 
 % function to assemble vector of polynomial support
