@@ -100,9 +100,11 @@ y_vals = 25*h.^2;
 
 figure(3)
 clf
+
+subplot(1,2,1)
 hold on
 plot(h,y_vals,'-k','LineWidth', 2);
-plot(h,L2_p1,'--sr','LineWidth', 2,'MarkerSize',20);
+plot(h,L2_p1,'--*r','LineWidth', 2,'MarkerSize',20);
 plot(h,L2_p2,'--^g','LineWidth', 2,'MarkerSize',20);
 plot(h,L2_p3,'--ob','LineWidth', 2,'MarkerSize',20);
 set(gca, 'XScale', 'log', 'YScale', 'log');
@@ -125,11 +127,11 @@ L2_p2  = [1.4405951192382591e-01, 3.8751092903826695e-02, 9.9237695440348075e-03
 L2_p3  = [1.4440976153230486e-01, 3.8747904430549381e-02, 9.9213383512770890e-03, 2.5014466551637783e-03];
 y_vals = 25*h.^2;
 
-figure(4)
-clf
+figure(3)
+subplot(1,2,2)
 hold on
 plot(h,y_vals,'-k','LineWidth', 2);
-plot(h,L2_p1,'--sr','LineWidth', 2,'MarkerSize',20);
+plot(h,L2_p1,'--*r','LineWidth', 2,'MarkerSize',20);
 plot(h,L2_p2,'--^g','LineWidth', 2,'MarkerSize',20);
 plot(h,L2_p3,'--ob','LineWidth', 2,'MarkerSize',20);
 set(gca, 'XScale', 'log', 'YScale', 'log');

@@ -127,7 +127,7 @@ set(gca, 'FontSize', 24);
 nnodes = [18,37,64,92,130,176,222,280,340,416,488,565,652,746,854,956,1070,1188,1313,1450,1580,1734,1886,2040,2200];
 time   = [0.012,0.014,0.015,0.016,0.019,0.023,0.026,0.033,0.041,0.049,0.06,0.07,0.085,0.1,0.13,0.16,0.2,0.24,0.27,0.33,0.38,0.47,0.54,0.64,0.76];
 
-poly = polyfit(nnodes,time./time(1),2);
+poly = polyfit(nnodes,(time./time(1)),2);
 y_poly = polyval(poly,nnodes);
 
 figure(4)
@@ -136,7 +136,7 @@ hold on
 plot(nnodes, time/time(1),'--b','LineWidth', 2, 'MarkerSize', 20);
 plot(nnodes, y_poly,'--*r','LineWidth', 2, 'MarkerSize', 10);
 xlabel('number of donor nodes','Interpreter','latex'); ylabel('Normalized wall time','Interpreter','latex');
-% title('RBF($C^2$)','Interpreter','latex');
+legend('RBF($C^2$)','fit','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
 

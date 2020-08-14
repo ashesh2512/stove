@@ -79,12 +79,37 @@ legend('slope=1', 'slope=2', 'linear Lagrange', 'quadratic Lagrange', 'cubic Lag
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
 
+h_more = [del, del/2, del/4, del/8, del/16, del/32];
+
+Linf_p1 = [1.5061936905345824e-01 2.8917359944103327e-02 1.5905327901606758e-02, 1.1842950370248850e-02];
+L1_p1 = [5.3428987531454641e-02, 7.2403158733747065e-03, 5.1409297607955332e-03, 4.6683455038666307e-03];
+L2_p1_more_pnt = [6.526605e-02 9.348554e-03 6.497774e-03 5.626061e-03, 1.2048488937670115e-03, 1.0502788503821345e-03];
+L2_p1_nalu = [0.0649947,0.00933676,0.00647152,0.00559759,0.001198,0.00103554];
+L2_p1_no_force = [1.0301090407039784e-03,2.6363040699105484e-04,6.6472045986772302e-05,1.6699549484364887e-05,4.1872697579593792e-06,1.0479168024005510e-06];
+
+y_vals1= 0.2*h_more;
+y_vals2= 0.5*h_more.^2;
+
+figure(3)
+clf
+hold on
+plot(h_more,y_vals1,'-m','LineWidth', 2);
+plot(h_more,y_vals2,'-k','LineWidth', 2);
+plot(h_more,L2_p1_more_pnt,'--*r','LineWidth', 2,'MarkerSize',20);
+plot(h_more,L2_p1_nalu,'--^g','LineWidth', 2,'MarkerSize',20);
+plot(h_more,L2_p1_no_force,'--ob','LineWidth', 2,'MarkerSize',20);
+set(gca, 'XScale', 'log', 'YScale', 'log');
+xlabel('$h$','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
+legend('slope=1', 'slope=2', 'Heat MMS, Matlab code','Heat MMS, Nalu','Laplace, Matlab code','Interpreter','latex');
+set(gcf,'color','w');
+set(gca, 'FontSize', 24);
+
 gap = [7.362500e-01, 6.637500e-01, 6.637500e-01, 7.362500e-01;
        3.362500e-01, 3.637500e-01, 3.637500e-01, 3.362500e-01;
        1.862500e-01, 1.637500e-01, 1.637500e-01, 1.862500e-01;
        8.625000e-02, 8.875000e-02, 8.875000e-02, 8.625000e-02];
 
-figure(3)
+figure(4)
 clf
 subplot(2,2,1)
 plot(h, gap(:,1),'--*r','LineWidth', 2)
@@ -114,11 +139,11 @@ title('left boundary','Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 16);
 
-fig = figure(2);
-set(fig,'Units','Inches');
-pos = get(fig,'Position');
-set(fig,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
-print(fig,'temp_name','-dpdf','-r0')
+% fig = figure(2);
+% set(fig,'Units','Inches');
+% pos = get(fig,'Position');
+% set(fig,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+% print(fig,'temp_name','-dpdf','-r0')
 
 %% problem properties               
 % near body mesh 2 fringe gap: bottom: 7.362500e-01, right: 6.637500e-01, top: 6.637500e-01, left:7.362500e-01 
@@ -141,7 +166,7 @@ L2_p1  = [6.526605e-02 1.619219e-02 3.762973e-03 1.023410e-03];
 y_vals1= 5*h;
 y_vals2= 0.1*h.^2;
 
-figure(4)
+figure(5)
 clf
 hold on
 plot(h,y_vals2,'-k','LineWidth', 2);

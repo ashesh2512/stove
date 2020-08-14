@@ -229,10 +229,25 @@ legend('OSS, GMRES tolerance $1e-06$','OAS, GMRES tolerance $1e-06$','OAS, 1 Kry
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
 
+del              = 0.2;
+h                = [del del/2 del/4 del/8];
+OAS_tol_1em5     = [6, 15, 46, 153];
+
+figure(6)
+clf
+hold on
+plot(h,  h.^(-2),'-k','LineWidth', 2,'MarkerSize',20);
+plot(h, OAS_tol_1em5,'--sr','LineWidth', 2,'MarkerSize',20);
+set(gca, 'XScale', 'log', 'YScale', 'log');
+xlabel('$h$','Interpreter','latex'); ylabel('$OC$ iterations','Interpreter','latex');
+legend('$O(h^{-2})$','OAS, RBF$(C^2)$','Interpreter','latex');
+set(gcf,'color','w');
+set(gca, 'FontSize', 18);
+
 %%
 
-% fig = figure(2);
+% fig = figure(6);
 % set(fig,'Units','Inches');
 % pos = get(fig,'Position');
 % set(fig,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
-% print(fig,'temp_name','-dpdf','-r0')
+% print(fig,'schwarz_conv','-dpdf','-r0')

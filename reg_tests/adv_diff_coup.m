@@ -74,7 +74,7 @@ debug_flags = containers.Map({'plot mesh', 'plot hole cut', 'print fringe gap', 
 
 fprintf('\n');
 fprintf(['Starting test for scalar linear advection equation on coupled meshes with periodic bc ', ...
-         'using rbf interpolation of order 1 ']);
+         'using rbf interpolation of order 1, pe = O(100) ']);
 fprintf('\n');
 
 %create container map for easy addition and removal of variables without
@@ -101,7 +101,7 @@ fprintf('\n');
 
 fprintf('\n');
 fprintf(['Starting test for scalar linear advection equation on coupled meshes with periodic bc ', ...
-         'using rbf interpolation of order 1 ']);
+         'using rbf interpolation of order 1, pe = O(1) ']);
 fprintf('\n');
 
 pp('conductivity') = 1/pi;
@@ -131,7 +131,7 @@ fprintf('\n');
 
 fprintf('\n');
 fprintf(['Starting test for scalar linear advection equation on coupled meshes with periodic bc ', ...
-         'using rbf interpolation of order 1 ']);
+         'using rbf interpolation of order 2, pe = O(1) ']);
 fprintf('\n');
 
 ov_info('poly order') = 2;

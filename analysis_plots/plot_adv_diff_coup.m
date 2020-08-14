@@ -53,19 +53,19 @@ L2_C1_pe_1  = [2.1921410575299486e-03, 3.5310758549192964e-04, 1.613830101593958
 L2_C2_pe_1  = [2.1739879491656034e-03, 3.2841466860091879e-04, 6.4658287739179044e-05, 1.4660582742780726e-05];
 L2_C3_pe_1  = [2.1655535321836662e-03, 3.2449544864477579e-04, 6.4820292090176325e-05, 1.4621554609798473e-05];
 
-L2_C1_pe_p10  = [2.2472932811554120e-04, 3.4169988176370481e-05, 9.5325415495192410e-05, 8.1318862968400850e-05];
-L2_C2_pe_p10  = [1.8860734675442517e-04, 3.6126313521504175e-05, 5.3606163684837370e-07, 6.9658680943685813e-07];
-L2_C3_pe_p10  = [4.8345298332457586e-05, 1.8203051870485835e-06, 2.4460283266438742e-06, 4.2645817898455545e-07];
+L2_C1_pe_p1  = [2.2472932811554120e-04, 3.4169988176370481e-05, 9.5325415495192410e-05, 8.1318862968400850e-05];
+L2_C2_pe_p1  = [1.8860734675442517e-04, 3.6126313521504175e-05, 5.3606163684837370e-07, 6.9658680943685813e-07];
+L2_C3_pe_p1  = [4.8345298332457586e-05, 1.8203051870485835e-06, 2.4460283266438742e-06, 4.2645817898455545e-07];
 
 h_more      = [del del/2 del/4 del/8 del/16];
 L2_C1_pe_0  = [2.0132630043953880e-04, 2.9092760191521902e-05, 8.8983158302284894e-05, 7.5976056795078629e-05];
 L2_C2_pe_0  = [1.8166748083944174e-04, 3.5651015544360451e-05, 3.5658491486951507e-07, 6.6251707792438454e-07, 2.4375326290910114e-08];
 
 y_vals1 = 100*h.^2;
-y_vals2 = 1e-5*h.^2;
+y_vals2 = 1e-4*h.^2;
 
 
-figure(2)
+figure(1)
 clf
 hold on
 
@@ -77,22 +77,29 @@ plot(h,L2_C3_pe_1,'--ob','LineWidth', 2,'MarkerSize',20);
 plot(h,y_vals2,  '-k','LineWidth', 2);
 plot(h,L2_C1_pe_100,'--*r','LineWidth', 2,'MarkerSize',20);
 plot(h,L2_C1_pe_10,'--*r','LineWidth', 2,'MarkerSize',20);
-plot(h,L2_C1_pe_p10,'--*r','LineWidth', 2,'MarkerSize',20);
-plot(h,L2_C2_pe_p10,'--^g','LineWidth', 2,'MarkerSize',20);
-plot(h,L2_C3_pe_p10,'--ob','LineWidth', 2,'MarkerSize',20);
+% plot(h,L2_C1_pe_p1,'--*r','LineWidth', 2,'MarkerSize',20);
+% plot(h,L2_C2_pe_p1,'--^g','LineWidth', 2,'MarkerSize',20);
+% plot(h,L2_C3_pe_p1,'--ob','LineWidth', 2,'MarkerSize',20);
 set(gca, 'XScale', 'log', 'YScale', 'log');
 xlabel('$h$','Interpreter','latex'); ylabel('$L_2$','Interpreter','latex');
 legend('slope=2', 'RBF($C^1$)', 'RBF($C^2$)', 'RBF($C^3$)', 'Interpreter','latex');
 set(gcf,'color','w');
 set(gca, 'FontSize', 24);
+set(gca,'XTick',(0.02 : 0.04 : 0.2))
 
-th = text(0.1,1e-1,0,'$Pe/L = 100$');
-set(th,'FontSize',20,'BackgroundColor','none','EdgeColor','none','Interpreter','latex');
-th = text(0.1,1e-2,0,'$Pe/L = 10$');
-set(th,'FontSize',20,'BackgroundColor','none','EdgeColor','none','Interpreter','latex');
-th = text(0.1,1e-3,0,'$Pe/L = 1$');
-set(th,'FontSize',20,'BackgroundColor','none','EdgeColor','none','Interpreter','latex');
-th = text(0.1,2e-5,0,'$Pe/L = 0.1$');
-set(th,'FontSize',20,'BackgroundColor','none','EdgeColor','none','Interpreter','latex');
+th = text(0.1,1.5e-1,0,'$Pe \approx 300$');
+set(th,'FontSize',24,'BackgroundColor','none','EdgeColor','none','Interpreter','latex');
+th = text(0.1,6e-3,0,'$Pe \approx 30$');
+set(th,'FontSize',24,'BackgroundColor','none','EdgeColor','none','Interpreter','latex');
+th = text(0.1,1e-4,0,'$Pe \approx 3$');
+set(th,'FontSize',24,'BackgroundColor','none','EdgeColor','none','Interpreter','latex');
+% th = text(0.1,2e-5,0,'$Pe/L = 0.1$');
+% set(th,'FontSize',20,'BackgroundColor','none','EdgeColor','none','Interpreter','latex');
+
+% fig = figure(1);
+% set(fig,'Units','Inches');
+% pos = get(fig,'Position');
+% set(fig,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+% print(fig,'temp_name','-dpdf','-r0')
 
 
